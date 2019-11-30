@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)ConfigurationDefs.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <BinRootDir>$(SolutionDir)..\bin\</BinRootDir>
+    <LibRootDir>$(SolutionDir)..\lib\</LibRootDir>
+    <BinDir>$(SolutionDir)..\bin\$(PlatformShortName)\$(Configuration)\</BinDir>
+    <LibDir>$(SolutionDir)..\lib\$(PlatformShortName)\$(Configuration)\</LibDir>
+    <IntermediateDir>$(SolutionDir)..\intermediate\$(PlatformShortName)\$(Configuration)\</IntermediateDir>
+    <ExtDir>$(SolutionDir)..\externals\</ExtDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(ConfigurationType)'=='Application'">
+    <OutDir>$(BinDir)</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(ConfigurationType)'=='DynamicLibrary'">
+    <OutDir>$(BinDir)</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
+    <OutDir>$(LibDir)</OutDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IntDir>$(IntermediateDir)$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(ProjectDir);$(ExtDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>MSVC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>      
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(LibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>$(LibDir)$(TargetName).lib</ImportLibrary>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(LibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(LibDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+</Project>
