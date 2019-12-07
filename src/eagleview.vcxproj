@@ -24,6 +24,7 @@
   <ItemGroup>
     <ClInclude Include="Angle.hpp" />
     <ClInclude Include="BoardviewSpace.hpp" />
+    <ClInclude Include="Edge2.hpp" />
     <ClInclude Include="ToptestBoardview.hpp" />
     <ClInclude Include="Box2.hpp" />
     <ClInclude Include="ToptestImporter.hpp" />

@@ -43,6 +43,9 @@
     <ClInclude Include="XMLBrowser.hpp">
       <Filter>src\XML</Filter>
     </ClInclude>
+    <ClInclude Include="Edge2.hpp">
+      <Filter>src\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eagleview.cpp">
