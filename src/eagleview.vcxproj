@@ -21,6 +21,17 @@
   <ItemGroup>
     <ClCompile Include="eagleview.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Angle.hpp" />
+    <ClInclude Include="BoardviewSpace.hpp" />
+    <ClInclude Include="ToptestBoardview.hpp" />
+    <ClInclude Include="Box2.hpp" />
+    <ClInclude Include="ToptestImporter.hpp" />
+    <ClInclude Include="ToptestSpace.hpp" />
+    <ClInclude Include="ToptestWriter.hpp" />
+    <ClInclude Include="Vector2.hpp" />
+    <ClInclude Include="XMLBrowser.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{2290DAE3-1E65-40E2-89D6-63BBD1A2C000}</ProjectGuid>
@@ -72,6 +83,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -84,6 +96,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -98,6 +111,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -114,6 +128,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

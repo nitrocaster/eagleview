@@ -5,8 +5,44 @@
     </Filter>
     <Filter Include="externals">
     </Filter>
-    <Filter Include="include">
+    <Filter Include="src\Toptest">
+      <UniqueIdentifier>{4fb0400d-f949-45b5-ba85-3ac7a25de4ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Math">
+      <UniqueIdentifier>{0595d4dc-2101-4ef4-b421-7628eabeb4a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XML">
+      <UniqueIdentifier>{5845398d-bc09-4419-9134-249351b5f03f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ToptestSpace.hpp">
+      <Filter>src\Toptest</Filter>
+    </ClInclude>
+    <ClInclude Include="ToptestBoardview.hpp">
+      <Filter>src\Toptest</Filter>
+    </ClInclude>
+    <ClInclude Include="ToptestWriter.hpp">
+      <Filter>src\Toptest</Filter>
+    </ClInclude>
+    <ClInclude Include="ToptestImporter.hpp">
+      <Filter>src\Toptest</Filter>
+    </ClInclude>
+    <ClInclude Include="Angle.hpp">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Box2.hpp">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.hpp">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="BoardviewSpace.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLBrowser.hpp">
+      <Filter>src\XML</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eagleview.cpp">
