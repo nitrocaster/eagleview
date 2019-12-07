@@ -5,12 +5,151 @@
 
 #include "ToptestBoardview.hpp"
 #include "XMLBrowser.hpp"
+#include "Edge2.hpp"
 #include <map>
 #include <unordered_map>
 #include <charconv> // std::from_chars
+#include <array>
 
 namespace Toptest
 {
+    class OutlineBuilder final
+    {
+    private:
+        struct Index
+        {
+            static constexpr size_t InvalidValue = size_t(-1);
+            size_t Value;
+            
+            constexpr Index(size_t value = InvalidValue) :
+                Value(value)
+            {}
+
+            constexpr operator size_t() const
+            { return Value; }
+
+            constexpr bool Valid() const
+            { return Value != InvalidValue; }
+        };
+        
+        struct VertexData
+        {
+            Vector2 V;
+            Index Self;
+            std::array<Index, 2> Neighbors{};
+
+            VertexData() = default;
+
+            VertexData(Vector2 v, Index self) :
+                V(v),
+                Self(self)
+            {}
+
+            bool AddNeighbor(Index i)
+            {
+                if (!Neighbors[0].Valid())
+                {
+                    Neighbors[0] = i;
+                    return true;
+                }
+                if (!Neighbors[1].Valid())
+                {
+                    Neighbors[1] = i;
+                    return true;
+                }
+                return false;
+            }
+        };
+        
+        struct Vector2Hasher
+        {
+            uint64_t operator()(Vector2 const &vec) const noexcept
+            {
+                return uint64_t(double(vec.X)*73856093) ^ uint64_t(double(vec.Y)*83492791);
+            }
+        };
+
+        std::vector<VertexData> vertices;
+        std::unordered_map<Vector2, Index, Vector2Hasher> vertexSet;
+        using Loop = std::vector<Index>;
+        std::vector<Loop> loops;
+
+        Index FindVertex(Vector2 v)
+        {
+            Index &index = vertexSet[v];
+            if (!index.Valid())
+            {
+                index = vertices.size();
+                VertexData data(v, index);
+                vertices.push_back(data);
+            }
+            return index;
+        }
+
+        std::string VectorToString(Vector2 v)
+        { return std::to_string(v.X) + ", " + std::to_string(v.Y); }
+
+        Index NextVertex(VertexData const &current, Index prev)
+        {
+            auto pred = [&](Index next) { return next.Valid() && next != prev; };
+            auto next = std::find_if(begin(current.Neighbors), end(current.Neighbors), pred);
+            if (next == current.Neighbors.end())
+                return Index::InvalidValue;
+            else
+                return *next;
+        }
+
+        Loop NextLoop(std::vector<bool> &visited, std::vector<bool>::iterator &it)
+        {
+            Loop loop;
+            for (Index index = it - visited.begin(), prev = index; index.Valid() && !visited[index];)
+            {
+                VertexData const &vd = vertices[index];
+                loop.push_back(index);
+                visited[index] = true;
+                if (vd.Self != index)
+                    throw std::runtime_error("Index from VertexData must be equal to the computed index");
+                index = NextVertex(vd, prev);
+                prev = vd.Self;
+            }
+            it = visited.begin() + loop.back() + 1;
+            return loop;
+        }
+
+    public:
+        void AddEdge(Edge2 edge)
+        {
+            Index ia = FindVertex(edge.A);
+            Index ib = FindVertex(edge.B);
+            VertexData &a = vertices[ia];
+            VertexData &b = vertices[ib];
+            if (!a.AddNeighbor(b.Self))
+            {
+                auto msg = std::string("Vertex (") + VectorToString(edge.A) + ") is shared by more than 2 edges";
+                throw std::runtime_error(msg);
+            }
+            if (!b.AddNeighbor(a.Self))
+            {
+                auto msg = std::string("Vertex (") + VectorToString(edge.B) + ") is shared by more than 2 edges";
+                throw std::runtime_error(msg);
+            }
+        }
+
+        void Build(std::vector<Vector2> &output)
+        {
+            if (vertices.empty())
+                return;
+            std::vector<bool> visited;
+            visited.resize(vertices.size());
+            std::fill(begin(visited), end(visited), false);
+            for (auto it = visited.begin(); it != visited.end(); it = std::find(it, visited.end(), false))
+                loops.push_back(NextLoop(visited, it));
+            // XXX: return one loop which encloses other loops
+            for (auto i : loops.front())
+                output.push_back(vertices[i].V);
+        }
+    };
+
     class Importer final
     {
     private:
@@ -59,6 +198,13 @@ namespace Toptest
         struct SignalInfo
         {
             std::string Name;
+        };
+
+        struct SectionInfo
+        {
+            Edge2 Edge;
+            int32_t Layer;
+            float Curve;
         };
 
         static LibraryInfo ExtractLibraryInfo(tinyxml2::XMLBrowser::Proxy &item)
@@ -160,6 +306,18 @@ namespace Toptest
             }
         }
 
+        static SectionInfo ExtractSectionInfo(tinyxml2::XMLBrowser::Proxy &item)
+        {
+            SectionInfo section{};
+            section.Edge = {Vector2(item.Float("x1"), item.Float("y1")), Vector2(item.Float("x2"), item.Float("y2"))};
+            section.Layer = item.Int32("layer");
+            if (item.HasAttribute("curve"))
+                section.Curve = item.Float("curve");
+            else
+                section.Curve = 0.0f;
+            return section;
+        }
+
     public:
         Importer(Boardview &brd) :
             brd(brd)
@@ -176,15 +334,25 @@ namespace Toptest
             using ElementName = std::string;
             std::unordered_map<ElementName, SignalMap> partSignals;
             std::unordered_map<SignalName, size_t> netNameToIndex;
+            OutlineBuilder outlineBuilder;
+            float const reductionThreshold = 1.0f;
             tinyxml2::XMLBrowser browser(xml);
             auto drawing = browser("eagle")("drawing");
             auto board = drawing("board");
-    #if 0 // XXX: import board outline
-            // <wire x1="-10.7" y1="11.25" x2="-0.5" y2="11.25" width="0" layer="20"/>
-            // <wire x1="-11.2" y1="10.75" x2="-10.7" y2="11.25" width="0" layer="20" curve="-90"/>
             for (auto wire = board("plain")("wire"); wire; wire.Next("wire"))
-                ;
-    #endif
+            {
+                auto sectionInfo = ExtractSectionInfo(wire);
+                if (sectionInfo.Layer != 20) // outline must be in layer 20
+                    continue;
+                if (sectionInfo.Curve == 0 || sectionInfo.Edge.SqrLength() < reductionThreshold)
+                {
+                    outlineBuilder.AddEdge(sectionInfo.Edge);
+                    continue;
+                }
+                // XXX: generate intermediate vertices
+                // XXX: add edges to OutlineBuilder
+            }
+            outlineBuilder.Build(brd.Outline());
             for (auto lib = board("libraries")("library"); lib; lib.Next())
             {
                 auto libInfo = ExtractLibraryInfo(lib);
