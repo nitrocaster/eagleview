@@ -39,7 +39,8 @@ namespace Toptest
         struct PackageInfo
         {
             std::string Name;
-            std::unordered_map<std::string, PadInfo> Pads;
+            using PadName = std::string;
+            std::unordered_map<PadName, PadInfo> Pads;
         };
 
         struct LibraryInfo
