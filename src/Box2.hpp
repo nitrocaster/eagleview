@@ -93,7 +93,7 @@ private:
     using Limits = std::numeric_limits<Scalar>;
 
 public:
-    static constexpr Scalar ScalarEps {Limits::epsilon()};
+    static constexpr Scalar ScalarEps{Limits::epsilon()};
     static const Box2 Empty;
 };
 

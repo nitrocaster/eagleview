@@ -98,7 +98,7 @@ private:
     using Limits = std::numeric_limits<Scalar>;
 
 public:
-    static constexpr Scalar ScalarEps {Limits::epsilon()};
+    static constexpr Scalar ScalarEps{Limits::epsilon()};
     static const Vec2 MinValue;
     static const Vec2 MaxValue;
     static const Vec2 Epsilon;
@@ -107,7 +107,7 @@ public:
 
 using Vector2 = Vector2T<float>;
 
-inline constexpr Vector2 Vector2::MinValue {Limits::min(), Limits::min()};
-inline constexpr Vector2 Vector2::MaxValue {Limits::max(), Limits::max()};
-inline constexpr Vector2 Vector2::Epsilon {ScalarEps, ScalarEps};
-inline constexpr Vector2 Vector2::Origin {0, 0};
+inline constexpr Vector2 Vector2::MinValue{Limits::min(), Limits::min()};
+inline constexpr Vector2 Vector2::MaxValue{Limits::max(), Limits::max()};
+inline constexpr Vector2 Vector2::Epsilon{ScalarEps, ScalarEps};
+inline constexpr Vector2 Vector2::Origin{0, 0};

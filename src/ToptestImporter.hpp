@@ -67,7 +67,7 @@ namespace Toptest
 
         static PartInfo ExtractPartInfo(tinyxml2::XMLBrowser::Proxy &item)
         {
-            PartInfo info {};
+            PartInfo info{};
             info.Name = item.String("name");
             info.Library = item.String("library");
             info.Package = item.String("package");
@@ -160,7 +160,9 @@ namespace Toptest
         }
 
     public:
-        Importer(Boardview &brd) : brd(brd) {}
+        Importer(Boardview &brd) :
+            brd(brd)
+        {}
 
         void Import(tinyxml2::XMLDocument &xml)
         {
