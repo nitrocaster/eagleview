@@ -522,7 +522,11 @@ namespace Toptest
                 part->FirstPin(brd.Pins().size());
                 part->PinCount(pkg.Pads.size());
                 brd.Parts().push_back(std::move(part));
-                auto elementTransform = Matrix23::Translation(element.Pos) * Matrix23::Rotation(element.Rot);
+                auto elementTransform = Matrix23::Translation(element.Pos);
+                if (element.Layer == BoardLayer::Bottom)
+                    elementTransform *= Matrix23::Rotation(-element.Rot) * Matrix23::Scaling({-1, 1});
+                else
+                    elementTransform *= Matrix23::Rotation(element.Rot);
                 for (auto const &[padName, pad] : pkg.Pads)
                 {
                     auto pin = std::make_unique<Pin>();
