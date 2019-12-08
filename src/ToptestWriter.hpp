@@ -51,6 +51,8 @@ namespace Toptest
                 return 1;
             case BoardLayer::Bottom:
                 return 2;
+            case BoardLayer::Multilayer:
+                return 0;
             }
         }
 
