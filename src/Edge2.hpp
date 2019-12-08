@@ -38,6 +38,9 @@ struct Edge2T<float>
 
     constexpr Scalar SqrLength() const
     { return (B-A).SqrLength(); }
+
+    Scalar Length() const
+    { return (B-A).Length(); }
 };
 
 using Edge2 = Edge2T<float>;
