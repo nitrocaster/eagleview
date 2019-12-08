@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <charconv> // std::from_chars
 #include <array>
+#include <deque>
 
 namespace Toptest
 {
@@ -72,7 +73,7 @@ namespace Toptest
 
         std::vector<VertexData> vertices;
         std::unordered_map<Vector2, Index, Vector2Hasher> vertexSet;
-        using Loop = std::vector<Index>;
+        using Loop = std::deque<Index>;
         std::vector<Loop> loops;
 
         Index FindVertex(Vector2 v)
@@ -100,20 +101,54 @@ namespace Toptest
                 return *next;
         }
 
-        Loop NextLoop(std::vector<bool> &visited, std::vector<bool>::iterator &it)
+        Loop NextLoop(std::vector<bool> &visited, Index entry)
         {
             Loop loop;
-            for (Index index = it - visited.begin(), prev = index; index.Valid() && !visited[index];)
+            bool searchBack = false;
+            Index index = entry, prev = index;
+            while (true)
             {
-                VertexData const &vd = vertices[index];
-                loop.push_back(index);
-                visited[index] = true;
-                if (vd.Self != index)
-                    throw std::runtime_error("Index from VertexData must be equal to the computed index");
-                index = NextVertex(vd, prev);
-                prev = vd.Self;
+                while (true)
+                {
+                    if (!index.Valid())
+                    {
+                        // if this is a dead end, search from the entry again,
+                        // as we may have started from the middle of an open loop
+                        if (searchBack)
+                        {
+                            // finish if already been there
+                            searchBack = false;
+                            break;
+                        }
+                        searchBack = loop.size() > 1;
+                        break;
+                    }
+                    if (visited[index])
+                    {
+                        // current loop is closed, or there are no other loops,
+                        // so don't search back
+                        searchBack = false;
+                        break;
+                    }
+                    if (searchBack)
+                        loop.push_front(index);
+                    else
+                        loop.push_back(index);
+                    visited[index] = true;
+                    VertexData const &vd = vertices[index];
+                    if (vd.Self != index)
+                        throw std::runtime_error("Index from VertexData must be equal to the computed index");
+                    index = NextVertex(vd, prev);
+                    prev = vd.Self;
+                }
+                if (searchBack)
+                {
+                    index = NextVertex(vertices[entry], loop[1]);
+                    prev = entry;
+                    continue;
+                }
+                break;
             }
-            it = visited.begin() + loop.back() + 1;
             return loop;
         }
 
@@ -152,7 +187,7 @@ namespace Toptest
             visited.resize(vertices.size());
             std::fill(begin(visited), end(visited), false);
             for (auto it = visited.begin(); it != visited.end(); it = std::find(it, visited.end(), false))
-                loops.push_back(NextLoop(visited, it));
+                loops.push_back(NextLoop(visited, Index(it - visited.begin())));
             Loop const *maxLoop = &loops.front();
             Box2 maxLoopBBox(vertices.front().V, 0);
             for (Loop const &loop : loops)
