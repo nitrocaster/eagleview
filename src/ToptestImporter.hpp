@@ -495,6 +495,8 @@ namespace Toptest
             for (auto const &element : partInfos)
             {
                 PackageInfo const &pkg = libs[element.Library].Packages[element.Package];
+                if (pkg.Pads.empty())
+                    continue;
                 auto part = std::make_unique<Part>();
                 part->Name(element.Name);
                 part->Layer(element.Layer);
