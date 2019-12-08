@@ -121,7 +121,7 @@ namespace Toptest
             { (Write(args), ...); }
 
             void Write(Vector2 v)
-            { Write(v.X, ' ', v.Y); }
+            { Write(v.X, ' ', -v.Y); }
 
             void Write(Box2 b)
             { Write(b.Min, ' ', b.Max); }
