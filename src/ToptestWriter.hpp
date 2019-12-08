@@ -60,11 +60,33 @@ namespace Toptest
         {
         protected:
             std::ostream &os;
+            bool flipY = false;
+            bool shift = false;
+            float outlineHeight = 0;            
+
+            void SetTransform(BoardLayer layer)
+            {
+                switch (layer)
+                {
+                case BoardLayer::Top:
+                    flipY = true;
+                    shift = true;
+                    break;
+                }
+            }
+
+            void ResetTransform()
+            {
+                flipY = false;
+                shift = false;
+            }
 
         public:
             StreamWriter(std::ostream &s) :
                 os(s)
             {}
+
+            void OutlineHeight(float h) { outlineHeight = h; }
 
             template <typename T, bool Condition = false>
             static void Fail() { static_assert(Condition); }
@@ -121,7 +143,11 @@ namespace Toptest
             { (Write(args), ...); }
 
             void Write(Vector2 v)
-            { Write(v.X, ' ', -v.Y); }
+            {
+                if (shift)
+                    v.Y -= outlineHeight;
+                Write(v.X, ' ', flipY ? -v.Y : v.Y);
+            }
 
             void Write(Box2 b)
             { Write(b.Min, ' ', b.Max); }
@@ -133,12 +159,16 @@ namespace Toptest
 
             void Write(Pin const *p)
             {
+                SetTransform(p->Layer());
                 Write(p->Location(), ' ', p->Net(), ' ', p->Layer());
+                ResetTransform();
             }
 
             void Write(TestPoint const *n)
             {
+                SetTransform(n->Layer());
                 Write(n->Location(), ' ', n->Net(), ' ', n->Layer());
+                ResetTransform();
             }
         };
 
@@ -149,6 +179,7 @@ namespace Toptest
             Box2 outlineBox = CalculateOutlineBox();
             Vector2 outlineSize = outlineBox.Size();
             StreamWriter w(s);
+            w.OutlineHeight(outlineSize.Y);
             // brdout: n_verts bbox_size
             // vertex1
             // vertex2
