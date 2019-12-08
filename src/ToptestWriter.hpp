@@ -184,6 +184,7 @@ namespace Toptest
             // vertex1
             // vertex2
             // ...
+            w.Write("5287860", rn); // unknown magic number is expected to be on the first line
             auto const &outline = brd.Outline();
             w.Write("BRDOUT: ", outline.size() + 1, " ", outlineSize, rn);
             for (size_t i = 0; i < outline.size() + 1; i++)
