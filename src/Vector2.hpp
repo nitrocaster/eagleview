@@ -100,6 +100,9 @@ struct Vector2T<float>
     Scalar Magnitude() const
     { return Length(); }
 
+    Vec2 Normalize() const
+    { return *this / Length(); }
+
 private:
     using Limits = std::numeric_limits<Scalar>;
 
