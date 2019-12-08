@@ -117,6 +117,14 @@ namespace Toptest
             return loop;
         }
 
+        Box2 CalculateBBox(Loop const& loop) const
+        {
+            Box2 bbox(vertices[*loop.begin()].V, 0);
+            for (Index i : loop)
+                bbox.Merge(vertices[i].V);
+            return bbox;
+        }
+
     public:
         void AddEdge(Edge2 edge)
         {
@@ -145,8 +153,18 @@ namespace Toptest
             std::fill(begin(visited), end(visited), false);
             for (auto it = visited.begin(); it != visited.end(); it = std::find(it, visited.end(), false))
                 loops.push_back(NextLoop(visited, it));
-            // XXX: return one loop which encloses other loops
-            for (auto i : loops.front())
+            Loop const *maxLoop = &loops.front();
+            Box2 maxLoopBBox(vertices.front().V, 0);
+            for (Loop const &loop : loops)
+            {
+                Box2 bb = CalculateBBox(loop);
+                if (bb.Contains(maxLoopBBox))
+                {
+                    maxLoopBBox = bb;
+                    maxLoop = &loop;                    
+                }
+            }
+            for (Index i : *maxLoop)
                 output.push_back(vertices[i].V);
         }
     };
