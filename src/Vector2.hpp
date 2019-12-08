@@ -94,6 +94,12 @@ struct Vector2T<float>
     bool operator!=(Vec2 v2) const
     { return !(*this==v2); }
 
+    Scalar Length() const
+    { return std::sqrtf(SqrLength()); }
+
+    Scalar Magnitude() const
+    { return Length(); }
+
 private:
     using Limits = std::numeric_limits<Scalar>;
 
