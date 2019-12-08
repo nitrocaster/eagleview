@@ -337,6 +337,42 @@ namespace Toptest
             return section;
         }
 
+        static constexpr float PolyArcTheshold = 0.2f;
+
+        template <typename TInserter>
+        static void CreatePolyArc(Edge2 edge, float curve, TInserter insert)
+        {
+            float dist = edge.Length();
+            if (dist <= PolyArcTheshold)
+            {
+                insert(edge);
+                return;
+            }
+            int sign = Sign(curve);
+            curve = std::fabs(Angle::FromDegrees(curve).Radians());
+            Vector2 vec = edge.B - edge.A;
+            float h = dist / (2*std::tanf(curve/2));
+            auto turn = Matrix23::Rotation(Angle::FromDegrees(sign*90.0f));
+            Vector2 hvec = (turn * vec.Normalize())*h;
+            Vector2 center = edge.A + vec/2 + hvec;
+            Vector2 rvec = edge.A - center;
+            float r = rvec.Length();
+            float maxSector = 2*std::asinf(PolyArcTheshold/(2*r));
+            int sectorCount = int(std::ceilf(curve / maxSector));
+            float sectorAngle = curve / sectorCount;            
+            Vector2 prevVertex = edge.A;
+            if (sectorCount < 2)
+                throw std::runtime_error("Beer from nitrocaster");
+            for (int i = 0; i < sectorCount-1; i++)
+            {
+                turn = Matrix23::Rotation(Angle::FromRadians(sign*(i+1)*sectorAngle));
+                Vector2 v = center + turn*rvec;
+                insert({prevVertex, v});
+                prevVertex = v;
+            }
+            insert({prevVertex, edge.B});
+        }
+
     public:
         Importer(Boardview &brd) :
             brd(brd)
@@ -354,7 +390,6 @@ namespace Toptest
             std::unordered_map<ElementName, SignalMap> partSignals;
             std::unordered_map<SignalName, size_t> netNameToIndex;
             OutlineBuilder outlineBuilder;
-            float const reductionThreshold = 1.0f;
             tinyxml2::XMLBrowser browser(xml);
             auto drawing = browser("eagle")("drawing");
             auto board = drawing("board");
@@ -363,13 +398,13 @@ namespace Toptest
                 auto sectionInfo = ExtractSectionInfo(wire);
                 if (sectionInfo.Layer != 20) // outline must be in layer 20
                     continue;
-                if (sectionInfo.Curve == 0 || sectionInfo.Edge.SqrLength() < reductionThreshold)
+                if (!sectionInfo.Curve)
                 {
                     outlineBuilder.AddEdge(sectionInfo.Edge);
                     continue;
                 }
-                // XXX: generate intermediate vertices
-                // XXX: add edges to OutlineBuilder
+                CreatePolyArc(sectionInfo.Edge, sectionInfo.Curve,
+                    [&](Edge2 e) { outlineBuilder.AddEdge(e); });
             }
             outlineBuilder.Build(brd.Outline());
             for (auto lib = board("libraries").Begin("library"); lib; lib.Next())
