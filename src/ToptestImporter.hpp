@@ -332,9 +332,13 @@ namespace Toptest
             PadInfo pad{};
             pad.Name = item.String("name");
             pad.Pos = {item.Float("x"), item.Float("y")};
-            if (item.HasAttribute("diameter")) // through-hole pad
+            if (item.HasAttribute("drill")) // through-hole pad
             {
-                float diam = item.Float("diameter");
+                float diam;
+                if (item.HasAttribute("diameter"))
+                    diam = item.Float("diameter");
+                else
+                    diam = item.Float("drill");
                 pad.Size = {diam, diam};
                 pad.Layer = BoardLayer::Multilayer;
             }
