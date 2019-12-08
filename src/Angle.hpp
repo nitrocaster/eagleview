@@ -14,7 +14,7 @@ struct AngleT<float>
     using Scalar = float;
     using Angle = AngleT<Scalar>;
 
-    float Value;
+    Scalar Value;
 
     AngleT() = default;
 
@@ -36,23 +36,47 @@ public:
     constexpr static Angle FromDegrees(Scalar degrees)
     { return Angle(DegreesToRadians(degrees)); }
 
-    constexpr float Radians() const
+    constexpr Scalar Radians() const
     { return Value; }
 
-    constexpr float Degrees() const
+    constexpr Scalar Degrees() const
     { return RadiansToDegrees(Value); }
 
-    constexpr Angle &Radians(float radians)
+    constexpr Angle &Radians(Scalar radians)
     {
         Value = radians;
         return *this;
     }
 
-    constexpr Angle &Degrees(float degrees)
+    constexpr Angle &Degrees(Scalar degrees)
     {
         Value = DegreesToRadians(degrees);
         return *this;
     }
+
+    constexpr Angle operator*(Scalar factor) const
+    { return Angle(Value*factor); }
+
+    constexpr Angle &operator*=(Scalar factor)
+    {
+        Value *= factor;
+        return *this;
+    }
+
+    constexpr Angle operator/(Scalar factor) const
+    { return Angle(Value/factor); }
+
+    constexpr Angle &operator/=(Scalar factor)
+    {
+        Value /= factor;
+        return *this;
+    }
+
+    constexpr Angle operator-() const
+    { return Angle(-Value); }
+
+    constexpr Angle operator+() const
+    { return *this; }
 
 private:
     static constexpr Scalar ConversionFactor = 360.0f/(2*Pi);
