@@ -6,6 +6,7 @@
 #include "ToptestBoardview.hpp"
 #include "XMLBrowser.hpp"
 #include "Edge2.hpp"
+#include "Matrix23.hpp"
 #include <map>
 #include <unordered_map>
 #include <charconv> // std::from_chars
@@ -408,13 +409,13 @@ namespace Toptest
                 part->FirstPin(brd.Pins().size());
                 part->PinCount(pkg.Pads.size());
                 brd.Parts().push_back(std::move(part));
+                auto elementTransform = Matrix23::Translation(element.Pos) * Matrix23::Rotation(element.Rot);
                 for (auto const &[padName, pad] : pkg.Pads)
                 {
                     auto pin = std::make_unique<Pin>();
                     pin->Name(pad.Name);
                     pin->Layer(element.Layer == BoardLayer::Top ? pad.Layer : FlipLayer(pad.Layer));
-                    // XXX: apply rotation (element.Rot) to pad.Pos, then add to element.Pos
-                    pin->Location(element.Pos + pad.Pos);
+                    pin->Location(elementTransform * pad.Pos);
                     pin->Net(netNameToIndex[partSignals[element.Name][padName]] + 1);
                     brd.Pins().push_back(std::move(pin));
                 }
