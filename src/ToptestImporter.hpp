@@ -340,7 +340,7 @@ namespace Toptest
             tinyxml2::XMLBrowser browser(xml);
             auto drawing = browser("eagle")("drawing");
             auto board = drawing("board");
-            for (auto wire = board("plain")("wire"); wire; wire.Next("wire"))
+            for (auto wire = board("plain").Begin("wire"); wire; wire.Next("wire"))
             {
                 auto sectionInfo = ExtractSectionInfo(wire);
                 if (sectionInfo.Layer != 20) // outline must be in layer 20
@@ -354,10 +354,10 @@ namespace Toptest
                 // XXX: add edges to OutlineBuilder
             }
             outlineBuilder.Build(brd.Outline());
-            for (auto lib = board("libraries")("library"); lib; lib.Next())
+            for (auto lib = board("libraries").Begin("library"); lib; lib.Next())
             {
                 auto libInfo = ExtractLibraryInfo(lib);
-                for (auto pkg = lib("packages")("package"); pkg; pkg.Next())
+                for (auto pkg = lib("packages").Begin("package"); pkg; pkg.Next())
                 {
                     auto pkgInfo = ExtractPackageInfo(pkg);
                     for (auto pad = pkg.Begin("pad"); pad; pad.Next("pad"))
@@ -374,15 +374,15 @@ namespace Toptest
                 }
                 libs[libInfo.Name] = std::move(libInfo);
             }
-            for (auto part = board("elements")("element"); part; part.Next())
+            for (auto part = board("elements").Begin("element"); part; part.Next())
                 partInfos.push_back(ExtractPartInfo(part));
             size_t crefs = 0;
-            for (auto signal = board("signals")("signal"); signal; signal.Next())
+            for (auto signal = board("signals").Begin("signal"); signal; signal.Next())
             {
                 auto signalInfo = ExtractSignalInfo(signal);
                 brd.Nets().push_back(signalInfo.Name);
                 netNameToIndex[signalInfo.Name] = brd.Nets().size() - 1;
-                for (auto cref = signal("contactref"); cref; cref.Next("contactref"))
+                for (auto cref = signal.Begin("contactref"); cref; cref.Next("contactref"))
                 {
                     crefs++;
                     auto crefInfo = ExtractContactRef(cref);
