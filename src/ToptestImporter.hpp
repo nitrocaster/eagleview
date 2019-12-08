@@ -229,11 +229,30 @@ namespace Toptest
             BoardLayer Layer;
         };
 
+        struct PadComparer
+        {
+            bool operator()(std::string const &a, std::string const &b) const
+            {
+                if (a.size() < b.size())
+                    return true;
+                if (a.size() > b.size())
+                    return false;
+                for (size_t i = 0; i < a.size(); i++)
+                {
+                    if (a[i] < b[i])
+                        return true;
+                    if (a[i] > b[i])
+                        return false;
+                }
+                return false;
+            }
+        };
+
         struct PackageInfo
         {
             std::string Name;
             using PadName = std::string;
-            std::unordered_map<PadName, PadInfo> Pads;
+            std::map<PadName, PadInfo, PadComparer> Pads;
         };
 
         struct LibraryInfo
