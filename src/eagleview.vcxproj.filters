@@ -25,9 +25,6 @@
     <ClInclude Include="ToptestWriter.hpp">
       <Filter>src\Toptest</Filter>
     </ClInclude>
-    <ClInclude Include="ToptestImporter.hpp">
-      <Filter>src\Toptest</Filter>
-    </ClInclude>
     <ClInclude Include="Angle.hpp">
       <Filter>src\Math</Filter>
     </ClInclude>
@@ -51,6 +48,9 @@
     </ClInclude>
     <ClInclude Include="Math.hpp">
       <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="ToptestEagleImporter.hpp">
+      <Filter>src\Toptest</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

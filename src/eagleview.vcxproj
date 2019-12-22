@@ -29,7 +29,7 @@
     <ClInclude Include="Matrix23.hpp" />
     <ClInclude Include="ToptestBoardview.hpp" />
     <ClInclude Include="Box2.hpp" />
-    <ClInclude Include="ToptestImporter.hpp" />
+    <ClInclude Include="ToptestEagleImporter.hpp" />
     <ClInclude Include="ToptestSpace.hpp" />
     <ClInclude Include="ToptestWriter.hpp" />
     <ClInclude Include="Vector2.hpp" />

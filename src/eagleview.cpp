@@ -2,7 +2,7 @@
 // Copyright (c) 2019 Pavel Kovalenko
 
 #include "ToptestBoardview.hpp"
-#include "ToptestImporter.hpp"
+#include "ToptestEagleImporter.hpp"
 #include "ToptestWriter.hpp"
 #include <cstdio> // std::puts
 #include <fstream> // std::ofstream
