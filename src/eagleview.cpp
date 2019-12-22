@@ -32,7 +32,7 @@ int main(int argc, char const *argv[])
     // XXX: catch exceptions
     Toptest::Boardview brd;
     auto fs = std::ofstream(dstFile);
-    Toptest::Importer importer(brd);
+    Toptest::EagleImporter importer(brd);
     importer.Import(src);
     Toptest::Writer writer(brd);
     writer.Write(fs);

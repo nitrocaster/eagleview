@@ -204,7 +204,7 @@ namespace Toptest
         }
     };
 
-    class Importer final
+    class EagleImporter final
     {
     private:
         Boardview &brd;
@@ -432,7 +432,7 @@ namespace Toptest
         }
 
     public:
-        Importer(Boardview &brd) :
+        EagleImporter(Boardview &brd) :
             brd(brd)
         {}
 
