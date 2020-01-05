@@ -27,13 +27,19 @@
     <ClInclude Include="Edge2.hpp" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="Matrix23.hpp" />
+    <ClInclude Include="StreamReader.hpp" />
+    <ClInclude Include="TeboBoard.hpp" />
     <ClInclude Include="ToptestBoardview.hpp" />
     <ClInclude Include="Box2.hpp" />
     <ClInclude Include="ToptestEagleImporter.hpp" />
     <ClInclude Include="ToptestSpace.hpp" />
     <ClInclude Include="ToptestWriter.hpp" />
     <ClInclude Include="Vector2.hpp" />
+    <ClInclude Include="Fixed32.hpp" />
     <ClInclude Include="XMLBrowser.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="eagleview.natvis" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -87,6 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpplatest</LanguageStandard>
+      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

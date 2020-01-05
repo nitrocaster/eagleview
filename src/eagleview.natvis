@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="Tebo::Fixed32T&lt;*&gt;">
+        <DisplayString>{value / decimalMultiplier}.{(((value>>31) &amp; -value) | (~(value>>31) &amp; value)) % decimalMultiplier}</DisplayString>
+        <Expand></Expand>
+    </Type>
+</AutoVisualizer>

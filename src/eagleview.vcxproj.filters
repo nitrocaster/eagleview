@@ -14,6 +14,9 @@
     <Filter Include="src\XML">
       <UniqueIdentifier>{5845398d-bc09-4419-9134-249351b5f03f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Tebo">
+      <UniqueIdentifier>{b1a26e21-938a-48fc-a097-f2c2d16dc224}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ToptestSpace.hpp">
@@ -52,10 +55,22 @@
     <ClInclude Include="ToptestEagleImporter.hpp">
       <Filter>src\Toptest</Filter>
     </ClInclude>
+    <ClInclude Include="Fixed32.hpp">
+      <Filter>src\Tebo</Filter>
+    </ClInclude>
+    <ClInclude Include="StreamReader.hpp">
+      <Filter>src\Tebo</Filter>
+    </ClInclude>
+    <ClInclude Include="TeboBoard.hpp">
+      <Filter>src\Tebo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eagleview.cpp">
       <Filter>src</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="eagleview.natvis" />
   </ItemGroup>
 </Project>
