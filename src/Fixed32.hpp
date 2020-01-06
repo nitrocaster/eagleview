@@ -4,6 +4,7 @@
 #pragma once
 
 #include <cstdint>
+#include "Vector2.hpp"
 
 namespace Tebo
 {
@@ -33,6 +34,8 @@ namespace Tebo
         { return value / decimalMultiplier; }
         int32_t Frac() const
         { return std::abs(value) % decimalMultiplier; }
+        operator float() const
+        { return value*1.0f / decimalMultiplier; }
         Fixed32T operator+(Fixed32T rhs)
         { return Fixed32T(value + rhs.value); }
         Fixed32T operator-(Fixed32T rhs)
@@ -54,5 +57,8 @@ namespace Tebo
     struct Vector2S
     {
         Fixed32 X, Y;
+
+        operator Vector2() const
+        { return {X, Y}; }
     };
 } // namespace Tebo
