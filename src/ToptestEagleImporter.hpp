@@ -280,6 +280,11 @@ namespace Toptest
             float Curve;
         };
 
+        static float MillimetersToMils(float v) { return 39.3701f*v; }
+
+        static Vector2 MetricVec(float x, float y)
+        { return {MillimetersToMils(x), MillimetersToMils(y)}; }
+
         static LibraryInfo ExtractLibraryInfo(tinyxml2::XMLBrowser::Proxy &item)
         {
             return {item.String("name")};
@@ -292,7 +297,7 @@ namespace Toptest
             info.Library = item.String("library");
             info.Package = item.String("package");
             info.Value = item.String("value");
-            info.Pos = {item.Float("x"), item.Float("y")};
+            info.Pos = MetricVec(item.Float("x"), item.Float("y"));
             if (item.HasAttribute("rot"))
             {
                 std::string rotStr = item.String("rot");
@@ -350,7 +355,7 @@ namespace Toptest
         {
             PadInfo pad{};
             pad.Name = item.String("name");
-            pad.Pos = {item.Float("x"), item.Float("y")};
+            pad.Pos = MetricVec(item.Float("x"), item.Float("y"));
             if (item.HasAttribute("drill")) // through-hole pad
             {
                 float diam;
@@ -358,12 +363,12 @@ namespace Toptest
                     diam = item.Float("diameter");
                 else
                     diam = item.Float("drill");
-                pad.Size = {diam, diam};
+                pad.Size = MetricVec(diam, diam);
                 pad.Layer = BoardLayer::Multilayer;
             }
             else // smd pad
             {
-                pad.Size = {item.Float("dx"), item.Float("dy")};
+                pad.Size = MetricVec(item.Float("dx"), item.Float("dy"));
                 pad.Layer = DecodeEagleLayer(item.Int32("layer"));
             }
             return pad;
@@ -386,7 +391,7 @@ namespace Toptest
         static SectionInfo ExtractSectionInfo(tinyxml2::XMLBrowser::Proxy &item)
         {
             SectionInfo section{};
-            section.Edge = {Vector2(item.Float("x1"), item.Float("y1")), Vector2(item.Float("x2"), item.Float("y2"))};
+            section.Edge = {MetricVec(item.Float("x1"), item.Float("y1")), MetricVec(item.Float("x2"), item.Float("y2"))};
             section.Layer = item.Int32("layer");
             if (item.HasAttribute("curve"))
                 section.Curve = item.Float("curve");
@@ -395,7 +400,7 @@ namespace Toptest
             return section;
         }
 
-        static constexpr float PolyArcTheshold = 0.2f;
+        static constexpr float PolyArcTheshold = 8.0f;
 
         template <typename TInserter>
         static void CreatePolyArc(Edge2 edge, float curve, TInserter insert)

@@ -62,7 +62,7 @@ namespace Toptest
             std::ostream &os;
             bool flipY = false;
             bool shift = false;
-            float outlineHeight = 0;            
+            float outlineHeight = 0;
 
             void SetTransform(BoardLayer layer)
             {
@@ -82,8 +82,7 @@ namespace Toptest
             }
 
         public:
-            StreamWriter(std::ostream &s) :
-                os(s)
+            StreamWriter(std::ostream &s) : os(s)
             {}
 
             void OutlineHeight(float h) { outlineHeight = h; }
@@ -127,12 +126,9 @@ namespace Toptest
                 Write(buf);
             }
 
-            static float MillimetersToMils(float v)
-            { return 39.3701f*v; }
-
             void Write(float v)
             {
-                Write(static_cast<int32_t>(std::roundf(MillimetersToMils(v))));
+                Write(static_cast<int32_t>(std::roundf(v)));
             }
 
             void Write(BoardLayer layer)
