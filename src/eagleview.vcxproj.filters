@@ -64,6 +64,9 @@
     <ClInclude Include="TeboBoard.hpp">
       <Filter>src\Tebo</Filter>
     </ClInclude>
+    <ClInclude Include="ToptestTeboImporter.hpp">
+      <Filter>src\Toptest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eagleview.cpp">

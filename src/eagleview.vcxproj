@@ -33,6 +33,7 @@
     <ClInclude Include="Box2.hpp" />
     <ClInclude Include="ToptestEagleImporter.hpp" />
     <ClInclude Include="ToptestSpace.hpp" />
+    <ClInclude Include="ToptestTeboImporter.hpp" />
     <ClInclude Include="ToptestWriter.hpp" />
     <ClInclude Include="Vector2.hpp" />
     <ClInclude Include="Fixed32.hpp" />
