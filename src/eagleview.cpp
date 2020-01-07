@@ -10,12 +10,13 @@
 
 static void PrintUsage()
 {
-    puts("usage: eagleview <input format> <input path> <output format> <output path>\n"
-        "supported input formats:\n"
-        "[-eagle] Autodesk EAGLE board (*.BRD)\n"
-        "[-tebo] Tebo-ICT view (*.TVW)\n"
-        "supported output formats:\n"
-        "[-toptest] Toptest board view (*.BRD)");
+    puts("usage:\n"
+        "    eagleview <input format> <input path> <output format> <output path>\n"
+        "\nsupported input formats:\n"
+        "    [-eagle] Autodesk EAGLE board (*.BRD)\n"
+        "    [-tebo] Tebo-ICT view (*.TVW)\n"
+        "\nsupported output formats:\n"
+        "    [-toptest] Toptest board view (*.BRD)");
 }
 
 using ImporterFunction = bool(*)(std::string const &srcPath, Toptest::Boardview &brd);
