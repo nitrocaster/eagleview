@@ -3,13 +3,12 @@
 
 #pragma once
 
+#include "Common.hpp"
 #include "Fixed32.hpp"
 #include "StreamReader.hpp"
 #include <istream> // std::istream
 #include <optional>
 #include <vector>
-
-#define R_ASSERT(expr) do { if (!(expr)) __debugbreak(); } while (0)
 
 namespace Tebo
 {
@@ -156,8 +155,7 @@ namespace Tebo
         case ShapeType::Oblong:
         {
             auto v = r.ReadU32();
-            if (v)
-                __debugbreak();
+            R_ASSERT(v == 0);
             auto radius = r.ReadS32();
             return std::make_unique<Oblong>(size, radius);
         }
@@ -739,8 +737,7 @@ namespace Tebo
                 LoadLines(r);
                 LoadArcs(r);
                 uint32_t skip4 = r.ReadU32();
-                if (skip4)
-                    __debugbreak();
+                R_ASSERT(skip4 == 0);
             }
             LoadTestpoints(r);
         }
@@ -1237,8 +1234,8 @@ namespace Tebo
             Angle = r.ReadS32();
             Decal = r.ReadU32();
             Type = static_cast<PartType>(r.ReadU32());
-            if ((Z1 = r.ReadU32())) // expected to be zero
-                __debugbreak();
+            Z1 = r.ReadU32();
+            R_ASSERT(Z1 == 0);
             Height = r.ReadS32();
             Flag0 = r.ReadBool8();
             Value = r.ReadString255();
@@ -1246,12 +1243,12 @@ namespace Tebo
             ToleranceN = r.ReadString255();
             Desc = r.ReadString255();
             Serial = r.ReadString255();
-            if ((Z2 = r.ReadU32())) // expected to be zero
-                __debugbreak();
+            Z2 = r.ReadU32();
+            R_ASSERT(Z2 == 0);
             auto pinCount = r.ReadU32();
             Layer = r.ReadU32();
-            if ((P2 = r.ReadU32()) != 0)
-                __debugbreak();
+            P2 = r.ReadU32();
+            R_ASSERT(P2 == 0);
             Pins.reserve(pinCount);
             for (uint32_t i = 0; i < pinCount; i++)
                 Pins.emplace_back().Load(r);

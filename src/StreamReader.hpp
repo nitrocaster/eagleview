@@ -3,8 +3,9 @@
 
 #pragma once
 
-#include <istream>
+#include "Common.hpp"
 #include "Fixed32.hpp"
+#include <istream>
 
 namespace Tebo
 {
@@ -34,8 +35,7 @@ namespace Tebo
         bool ReadBool8()
         {
             uint8_t v = ReadU8();
-            if (v != 0 && v != 1)
-                __debugbreak();
+            R_ASSERT(v <= 1);
             return v;
         }
 

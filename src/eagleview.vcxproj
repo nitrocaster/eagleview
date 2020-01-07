@@ -24,6 +24,7 @@
   <ItemGroup>
     <ClInclude Include="Angle.hpp" />
     <ClInclude Include="BoardviewSpace.hpp" />
+    <ClInclude Include="Common.hpp" />
     <ClInclude Include="Edge2.hpp" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="Matrix23.hpp" />

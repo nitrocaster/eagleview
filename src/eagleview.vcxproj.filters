@@ -67,6 +67,9 @@
     <ClInclude Include="ToptestTeboImporter.hpp">
       <Filter>src\Toptest</Filter>
     </ClInclude>
+    <ClInclude Include="Common.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eagleview.cpp">
