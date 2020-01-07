@@ -1,6 +1,19 @@
+// MIT License
+// Copyright (c) 2020 Pavel Kovalenko
+
 #pragma once
 
 #include <cstdio>
+
+#if defined(_MSC_VER)
+#define DEBUG_BREAK() __debugbreak()
+#define FUNCTION_NAME __FUNCTION__
+#elif defined(__GNUC__)
+#define DEBUG_BREAK() __builtin_trap()
+#define FUNCTION_NAME __PRETTY_FUNCTION__
+#else
+#error "Unsupported compiler"
+#endif
 
 inline void Fail(char const *expr, char const *func,
     char const *file, int line, char const *desc)
@@ -18,5 +31,5 @@ inline void Fail(char const *expr, char const *func,
     do \
     { \
         if (!(expr)) \
-            Fail(#expr, __FUNCTION__, __FILE__, __LINE__, "assertion failed"); \
+            Fail(#expr, FUNCTION_NAME, __FILE__, __LINE__, "assertion failed"); \
     } while (0)
