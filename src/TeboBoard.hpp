@@ -413,7 +413,8 @@ namespace Tebo
             Handle = r.ReadS32();
             P2 = r.ReadS32();
             P3 = r.ReadS32();
-            Pos = r.ReadVec2S(); ValidatePos(Pos);
+            Pos = r.ReadVec2S();
+            ValidatePos(Pos);
             P4 = r.ReadS32();
             Flag2 = r.ReadBool8();
             P5 = r.ReadS32();
@@ -438,7 +439,8 @@ namespace Tebo
             P1 = r.ReadS32();
             Handle = r.ReadS32();
             P2 = r.ReadS32();
-            Pos = r.ReadVec2S(); ValidatePos(Pos);
+            Pos = r.ReadVec2S();
+            ValidatePos(Pos);
             Pos1 = r.ReadVec2S();
             Pos2 = r.ReadVec2S();
             Flag1 = r.ReadBool8();
