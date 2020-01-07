@@ -17,15 +17,7 @@ namespace Tebo
         Vector2S Min, Max;
     };
 
-    inline void ValidatePos(Vector2S v)
-    {
-        // only for x240
-        const Vector2S bbMin = {15'00, 140'00};
-        const Vector2S bbMax = {11800'00, 5700'00};
-        bool success = v.X > bbMin.X && v.Y > bbMin.Y
-            && v.X < bbMax.X && v.Y < bbMax.Y;
-        R_ASSERT(success);
-    }
+    inline void ValidatePos(Vector2S v) {}
 
     enum class LayerType : uint32_t
     {
@@ -85,15 +77,39 @@ namespace Tebo
 
     struct Rect : public Shape
     {
-        Rect(Vector2S shapeSize) :
-            Shape(ShapeType::Rect, shapeSize)
+        float Param = 0.0f;
+
+        Rect(Vector2S shapeSize, float param) :
+            Shape(ShapeType::Rect, shapeSize),
+            Param(param)
         {}
     };
-
+    
     struct Poly : public Shape
     {
+        struct Line
+        {
+            int32_t Param1, Param2, Param3; // 1, 0, 0
+            Vector2S Start, End;
+            Fixed32 Thickness;
+
+            void Load(StreamReader &r)
+            {
+                Param1 = r.ReadU32();
+                R_ASSERT(Param1 == 1);
+                Param2 = r.ReadU32();
+                R_ASSERT(Param2 == 0);
+                Param3 = r.ReadU32();
+                R_ASSERT(Param3 == 0);
+                Start = r.ReadVec2S();
+                End = r.ReadVec2S();
+                Thickness = r.ReadS32();
+            }
+        };
+
         Box2S BBox;
-        int32_t Flags[5] = {};
+        std::vector<Poly::Line> Lines;
+        int32_t Flags[3] = {};
         std::vector<Vector2S> Vertices;
 
         Poly(Vector2S shapeSize, std::string const &shapeName) :
@@ -133,9 +149,10 @@ namespace Tebo
         }
         case ShapeType::Rect:
         {
-            auto v = r.ReadVec2S();
-            R_ASSERT(!v.X && !v.Y);
-            return std::make_unique<Rect>(size);
+            auto param = r.ReadFloat();
+            auto z = r.ReadS32();
+            R_ASSERT(z == 0);
+            return std::make_unique<Rect>(size, param);
         }
         case ShapeType::Poly:
         {
@@ -145,11 +162,32 @@ namespace Tebo
             auto shape = std::make_unique<Poly>(size, name);
             shape->BBox.Min = r.ReadVec2S();
             shape->BBox.Max = r.ReadVec2S();
-            r.Read(shape->Flags, 5);
-            uint32_t vertexCount = r.ReadU32();
-            shape->Vertices.reserve(vertexCount);
-            for (uint32_t i = 0; i < vertexCount; i++)
-                shape->Vertices.push_back(r.ReadVec2S());
+            auto subObjCount = r.ReadU32();
+            for (uint32_t i = 0; i < subObjCount; i++)
+            {
+                auto subObjType = r.ReadU32();
+                switch (subObjType)
+                {
+                case 2: // poly
+                {
+                    R_ASSERT(shape->Vertices.empty());
+                    r.Read(shape->Flags, 3);
+                    uint32_t vertexCount = r.ReadU32();
+                    shape->Vertices.reserve(vertexCount);
+                    for (uint32_t i = 0; i < vertexCount; i++)
+                        shape->Vertices.push_back(r.ReadVec2S());
+                    break;
+                }
+                case 5: // line
+                {
+                    shape->Lines.emplace_back().Load(r);
+                    break;
+                }
+                default:
+                    R_ASSERT(!"Unrecognized subobject type");
+                    break;
+                }
+            }
             return shape;
         }
         case ShapeType::Oblong:
@@ -466,6 +504,31 @@ namespace Tebo
         }
     };
 
+    struct UnknownItem
+    {
+        std::string Name;
+        Vector2S Pos;
+        int32_t Z1;
+        int32_t Param1, Param2, Param3;
+        int32_t Z2, Z3;
+        bool Flags[3];
+        uint32_t Param4;
+
+        void Load(StreamReader &r)
+        {
+            Name = r.ReadString255();
+            Pos = r.ReadVec2S();
+            Z1 = r.ReadS32();
+            Param1 = r.ReadS32();
+            Param2 = r.ReadS32();
+            Param3 = r.ReadS32();
+            Z2 = r.ReadS32();
+            Z3 = r.ReadS32();
+            r.Read(Flags, 3);
+            Param4 = r.ReadS32();
+        }
+    };
+
     struct LogicLayer : public Object
     {
         std::vector<std::unique_ptr<Shape>> Shapes;
@@ -473,7 +536,9 @@ namespace Tebo
         std::vector<Line> Lines;
         std::vector<Arc> Arcs;
         std::vector<Surface> Surfaces;
-
+        uint32_t UnknownItemCount;
+        uint32_t UnknownItemsParam;
+        std::vector<UnknownItem> UnknownItems;
         uint32_t TpCount;
         std::vector<TestPoint> TestPoints;
         uint32_t TPS2Size;
@@ -493,6 +558,8 @@ namespace Tebo
         {
             // this is actually max dcode, not a 'count'
             uint32_t shapeCount = r.ReadU32();
+            if (!shapeCount)
+                return;
             R_ASSERT(shapeCount >= 10);
             shapeCount -= 10;
             for (uint32_t i = 0; i < shapeCount; i++)
@@ -638,15 +705,24 @@ namespace Tebo
             }
         }
 
+        void LoadUnknownItems(StreamReader &r)
+        {
+            UnknownItemCount = r.ReadU32();
+            UnknownItemsParam = r.ReadU32();
+            if (UnknownItemCount)
+            {
+                UnknownItems.reserve(UnknownItemCount);
+                for (uint32_t i = 0; i < UnknownItemCount; i++)
+                    UnknownItems.emplace_back().Load(r);
+                uint32_t skip = r.ReadU32();
+                R_ASSERT(skip == 0);
+            }
+            uint32_t skip = r.ReadU32();
+            R_ASSERT(skip == 7);
+        }
+
         void LoadTestpoints(StreamReader &r)
         {
-            {
-                uint32_t dummy[3];
-                r.Read(dummy, 3);
-                R_ASSERT(dummy[0] == 0);
-                R_ASSERT(dummy[1] == 0);
-                R_ASSERT(dummy[2] == 7);
-            }
             TpCount = r.ReadU32();
             TestPoints.reserve(TpCount);
             for (uint32_t i = 0; i < TpCount; i++)
@@ -702,43 +778,47 @@ namespace Tebo
         {
             Object::Load(r);
             LoadShapes(r);
-            bool extraData = false;
+            if (!Shapes.empty())
             {
-                auto skip1 = r.ReadU32();
-                // NOTE: this might be incorrect way to determine data order
-                // (maybe it has to be bound to layer type?)
-                switch (skip1)
+                bool extraData = false;
                 {
-                default:
-                    R_ASSERT(!"Unrecognized data order");
-                    break;
-                case 1: // normal: shapes, [these flags], pads, lines, arcs, surfaces
-                    break;
-                case 2: // extra data: shapes, [these flags], pads, lines(0), arcs(0), surfaces, int32[4], lines, arcs
-                    extraData = true;
-                    break;
+                    auto skip1 = r.ReadU32();
+                    // NOTE: this might be incorrect way to determine data order
+                    // (maybe it has to be bound to layer type?)
+                    switch (skip1)
+                    {
+                    default:
+                        R_ASSERT(!"Unrecognized data order");
+                        break;
+                    case 1: // normal: shapes, [these flags], pads, lines, arcs, surfaces
+                        break;
+                    case 2: // extra data: shapes, [these flags], pads, lines(0), arcs(0), surfaces, int32[4], lines, arcs
+                        extraData = true;
+                        break;
+                    }
+                    auto skip2 = r.ReadU32();
+                    R_ASSERT(skip2 == 0);
+                    auto skip3 = r.ReadU32();
+                    R_ASSERT(skip3 == 1);
                 }
-                auto skip2 = r.ReadU32();
-                R_ASSERT(skip2 == 0);
-                auto skip3 = r.ReadU32();
-                R_ASSERT(skip3 == 1);
-            }
-            LoadPads(r);
-            LoadLines(r);
-            LoadArcs(r);
-            LoadSurfaces(r);
-            if (extraData)
-            {
-                uint32_t skip3[4];
-                r.Read(skip3, 4);
-                printf("* skip: %u, %u, %u, %u\n",
-                    skip3[0], skip3[1], skip3[2], skip3[3]);
-                // reload lines and arcs
+                LoadPads(r);
                 LoadLines(r);
                 LoadArcs(r);
-                uint32_t skip4 = r.ReadU32();
-                R_ASSERT(skip4 == 0);
+                LoadSurfaces(r);
+                if (extraData)
+                {
+                    uint32_t skip3[4];
+                    r.Read(skip3, 4);
+                    printf("* skip: %u, %u, %u, %u\n",
+                        skip3[0], skip3[1], skip3[2], skip3[3]);
+                    // reload lines and arcs
+                    LoadLines(r);
+                    LoadArcs(r);
+                    uint32_t skip4 = r.ReadU32();
+                    R_ASSERT(skip4 == 0);
+                }
             }
+            LoadUnknownItems(r);
             LoadTestpoints(r);
         }
     };
@@ -1219,7 +1299,7 @@ namespace Tebo
         std::string ToleranceN;
         std::string Desc;
         std::string Serial;
-        uint32_t Z2;
+        uint32_t Z2 = 0;
         // uint32_t PinCount
         uint32_t Layer; // 3 / 12
         uint32_t P2; // 0
@@ -1242,9 +1322,12 @@ namespace Tebo
             ToleranceP = r.ReadString255();
             ToleranceN = r.ReadString255();
             Desc = r.ReadString255();
-            Serial = r.ReadString255();
-            Z2 = r.ReadU32();
-            R_ASSERT(Z2 == 0);
+            if (Flag0)
+            {
+                Serial = r.ReadString255();
+                Z2 = r.ReadU32();
+                R_ASSERT(Z2 == 0);
+            }
             auto pinCount = r.ReadU32();
             Layer = r.ReadU32();
             P2 = r.ReadU32();
@@ -1296,13 +1379,10 @@ namespace Tebo
         std::string Name;
 
         uint32_t HeaderParams[3];
-        uint8_t Flags1[2];
-        std::unique_ptr<Object> Sub1;
-
-        uint8_t FlagSub2;
-        std::unique_ptr<Object> Sub2;
+        bool Flag;
+        std::array<std::unique_ptr<Object>, 3> Layers;
     
-        uint8_t Flag3;
+        bool OutlineFlag;
         uint32_t Param; // 2
         int32_t N1; // -1
         uint32_t OutlineVertexCount; // 8
@@ -1315,22 +1395,16 @@ namespace Tebo
             R_ASSERT(Flag1);
             Name = r.ReadString255();
             r.Read(HeaderParams, 3);
-            r.Read(Flags1, 2);
-            if (!Flags1[1])
+            Flag = r.ReadBool8();
+            for (uint32_t i = 0; i < Layers.size(); i++)
             {
-                uint8_t extraFlags[2];
-                r.Read(extraFlags, 2);
-                printf("- decal[%s] extra flags1: %02X %02X\n",
-                    Name.c_str(), extraFlags[0], extraFlags[1]);
+                bool present = r.ReadBool8();
+                if (!present)
+                    continue;
+                Layers[i] = LoadObject(r);
             }
-            Sub1 = LoadObject(r);
-            FlagSub2 = r.ReadU8();
-            if (!FlagSub2)
-            {
-                uint8_t skip = r.ReadU8();
-                Sub2 = LoadObject(r);
-                Flag3 = r.ReadU8();
-            }
+            OutlineFlag = r.ReadBool8();
+            R_ASSERT(OutlineFlag);
             Param = r.ReadU32();
             N1 = r.ReadS32();
             OutlineVertexCount = r.ReadU32();
