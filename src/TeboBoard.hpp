@@ -399,10 +399,15 @@ namespace Tebo
 
         static ObjectType Detect(StreamReader &r)
         {
-            auto type = r.ReadU32();
-            if (type)
+            const uint32_t maxSkips = 4;
+            for (uint32_t i = 0; i < maxSkips; i++)
+            {
+                uint32_t type = r.ReadU32();
+                if (!type)
+                    continue;
                 return static_cast<ObjectType>(type);
-            return static_cast<ObjectType>(r.ReadU32());
+            }
+            return ObjectType::Undefined;
         }
 
         Object(ObjectType objType)
