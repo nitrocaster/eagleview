@@ -211,7 +211,7 @@ namespace Tebo
         Vector2S Pos;
         bool IsExposed;
         bool IsCopper;
-        bool IsTestPoint;
+        uint8_t TestpointParam; // 0 - smd pin, 1 - accessible, 2 - mask
         // extensions
         bool IsSomething = false;
         struct TestPointData
@@ -588,13 +588,13 @@ namespace Tebo
                 obj.Pos = r.ReadVec2S();
                 obj.IsExposed = r.ReadBool8();
                 obj.IsCopper = r.ReadBool8();
-                obj.IsTestPoint = r.ReadBool8();
+                obj.TestpointParam = r.ReadU8();
                 R_ASSERT(obj.DCode-10 < Shapes.size());
                 obj.Shape = Shapes[obj.DCode-10].get();
                 if (obj.IsCopper)
                 {
                     obj.IsSomething = r.ReadBool8();
-                    if (obj.IsTestPoint)
+                    if (obj.TestpointParam == 1)
                         r.Read(obj.TestPoint.Data12, 12);
                     if (obj.IsExposed || obj.IsSomething)
                     {
@@ -612,7 +612,7 @@ namespace Tebo
                 }
                 else // not copper
                 {
-                    R_ASSERT(!obj.IsExposed && !obj.IsTestPoint); // not expected
+                    R_ASSERT(!obj.IsExposed && obj.TestpointParam != 1); // not expected
                     // no exposed copper => no extra data
                 }
                 Pads.push_back(std::move(obj));
