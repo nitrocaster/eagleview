@@ -56,6 +56,9 @@ namespace Toptest
             }
         }
 
+        static int32_t Round(float f)
+        { return static_cast<int32_t>(std::round(f)); }
+
         class StreamWriter final
         {
         protected:
@@ -119,6 +122,13 @@ namespace Toptest
                 Write(buf);
             }
 
+            void Write(int64_t v)
+            {
+                char buf[24];
+                _i64toa_s(v, buf, sizeof(buf), 10);
+                Write(buf);
+            }
+
             void Write(size_t v)
             {
                 char buf[24];
@@ -127,9 +137,7 @@ namespace Toptest
             }
 
             void Write(float v)
-            {
-                Write(static_cast<int32_t>(std::roundf(v)));
-            }
+            { Write(Round(v)); }
 
             void Write(BoardLayer layer)
             { Write(EncodeLayer(layer)); }
@@ -180,8 +188,12 @@ namespace Toptest
             // vertex1
             // vertex2
             // ...
-            w.Write("5287860", rn); // unknown magic number is expected to be on the first line
             auto const &outline = brd.Outline();
+            int64_t magic = 163LL*(Round(outline[0].X) + Round(outline[0].Y));
+            magic += 80LL*(outline.size()+1);
+            magic += 79LL*Round(outlineBox.Height());
+            magic += 84LL*Round(outlineBox.Width());
+            w.Write(magic, rn);
             w.Write("BRDOUT: ", outline.size() + 1, " ", outlineSize, rn);
             for (size_t i = 0; i < outline.size() + 1; i++)
                 w.Write(outline[i % outline.size()], rn);
