@@ -51,7 +51,7 @@ namespace Tebo
         Poly = 5,
     };
 
-    struct Shape abstract
+    struct Shape
     {
         ShapeType Type;
         Vector2S Size;
@@ -63,10 +63,12 @@ namespace Tebo
             Size = shapeSize;
         }
 
-        virtual ~Shape() = default;
+        virtual ~Shape() = 0;
 
         static std::unique_ptr<Shape> Load(StreamReader &r);
     };
+
+    inline Shape::~Shape() = default;
 
     struct Round : public Shape
     {
@@ -233,7 +235,7 @@ namespace Tebo
         } Hole;
     };
 
-    struct Primitive abstract
+    struct Primitive
     {
         int32_t Net;
         PrimitiveType Type;
@@ -242,8 +244,10 @@ namespace Tebo
         Primitive(PrimitiveType type)
         { Type = type; }
 
-        virtual ~Primitive() = default;
+        virtual ~Primitive() = 0;
     };
+
+    inline Primitive::~Primitive() = default;
 
     struct Line : public Primitive
     {

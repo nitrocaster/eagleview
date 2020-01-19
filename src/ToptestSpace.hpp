@@ -12,7 +12,7 @@
 
 namespace Toptest
 {
-    class Contact abstract
+    class Contact
     {
     private:
         std::string name;
@@ -20,7 +20,7 @@ namespace Toptest
         Vector2 location;
         NetID net;
     public:
-        virtual ~Contact() = default;
+        virtual ~Contact() = 0;
         Vector2 Location() const { return location; }
         void Location(Vector2 v) { location = v; }
         NetID Net() const { return net; }
@@ -30,6 +30,8 @@ namespace Toptest
         BoardLayer Layer() const { return layer; }
         void Layer(BoardLayer l) { layer = l; }
     };
+
+    inline Contact::~Contact() = default;
 
     class Part final
     {
