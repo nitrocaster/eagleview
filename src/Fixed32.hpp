@@ -50,6 +50,8 @@ namespace Tebo
         { return value >= rhs.value; }
         bool operator==(Fixed32T rhs) const
         { return value == rhs.value; }
+        bool operator!=(Fixed32T rhs) const
+        { return value != rhs.value; }
     };
 
     using Fixed32 = Fixed32T<2>;
@@ -60,5 +62,10 @@ namespace Tebo
 
         operator Vector2() const
         { return {X, Y}; }
+
+        bool operator==(Vector2S rhs) const
+        { return X == rhs.X && Y == rhs.Y; }
+        bool operator!=(Vector2S rhs) const
+        { return X != rhs.X || Y != rhs.Y; }
     };
 } // namespace Tebo
