@@ -44,10 +44,19 @@ namespace Toptest
             auto profile = GetThroughLayer(src, index);
             if (!profile)
                 return;
+            std::optional<Tebo::Vector2S> last;
             for (auto const &slot : profile->DrillSlots)
             {
-                brd.Outline().push_back(slot.Begin);
-                brd.Outline().push_back(slot.End);
+                if (!last || last.value() != slot.Begin)
+                {
+                    brd.Outline().push_back(slot.Begin);
+                    last = slot.Begin;
+                }
+                if (!last || last.value() != slot.End)
+                {
+                    brd.Outline().push_back(slot.End);
+                    last = slot.End;
+                }
             }
         }
 
