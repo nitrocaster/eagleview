@@ -3,26 +3,16 @@
 
 #pragma once
 
+#include "Common.hpp"
 #include <limits> // std::numeric_limits
-#include <cmath> // std::fabs
+#include <cmath> // std::abs
 
-template <typename T>
-struct Vector2T;
-
-template <>
-struct Vector2T<float>
+template <typename Scalar>
+struct Vector2T
 {
-    using Scalar = float;
     using Vec2 = Vector2T<Scalar>;
 
-    union
-    {
-        struct
-        {
-            Scalar X, Y;
-        };
-        Scalar S[2];
-    };
+    Scalar X, Y;
 
     Vector2T() = default;
 
@@ -32,10 +22,17 @@ struct Vector2T<float>
     {}
 
     constexpr Scalar &operator[](size_t i)
-    { return S[i]; }
+    {
+        switch (i)
+        {
+        case 0: return X;
+        case 1: return Y;
+        default: R_ASSERT(!"Index out of range");
+        }
+    }
 
     constexpr Scalar const &operator[](size_t i) const
-    { return S[i]; }
+    { return const_cast<Vector2T &>(*this)[i]; }
 
     constexpr Vec2 operator+(Vec2 v) const
     { return Vec2(X+v.X, Y+v.Y); }
@@ -89,13 +86,13 @@ struct Vector2T<float>
     { return SqrLength() >= v2.SqrLength(); }
 
     bool operator==(Vec2 v2) const
-    { return std::fabs(X-v2.X) <= ScalarEps && std::fabs(Y-v2.Y) <= ScalarEps; }
+    { return std::abs(X-v2.X) <= ScalarEps && std::abs(Y-v2.Y) <= ScalarEps; }
 
     bool operator!=(Vec2 v2) const
     { return !(*this==v2); }
 
     Scalar Length() const
-    { return std::sqrtf(SqrLength()); }
+    { return std::sqrt(SqrLength()); }
 
     Scalar Magnitude() const
     { return Length(); }

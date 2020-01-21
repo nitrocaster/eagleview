@@ -3,25 +3,15 @@
 
 #pragma once
 
+#include "Common.hpp"
 #include "Vector2.hpp"
 
-template <typename T>
-struct Edge2T;
-
-template <>
-struct Edge2T<float>
+template <typename Scalar>
+struct Edge2T
 {
-    using Scalar = float;
     using Vec2 = Vector2T<Scalar>;
     
-    union
-    {
-        struct
-        {
-            Vec2 A, B;
-        };
-        Vec2 V[2];
-    };
+    Vec2 A, B;
 
     Edge2T() = default;
 
@@ -31,10 +21,17 @@ struct Edge2T<float>
     {}
 
     constexpr Vec2 &operator[](size_t i)
-    { return V[i]; }
+    {
+        switch (i)
+        {
+        case 0: return A;
+        case 1: return B;
+        default: R_ASSERT(!"Index out of range");
+        }
+    }
 
     constexpr Vec2 const &operator[](size_t i) const
-    { return V[i]; }
+    { return const_cast<Edge2T &>(*this)[i]; }
 
     constexpr Scalar SqrLength() const
     { return (B-A).SqrLength(); }

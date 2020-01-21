@@ -7,16 +7,10 @@
 #include "Angle.hpp"
 #include "Math.hpp"
 
-template <typename T>
-struct Matrix23T;
-
 // Column-major order
-template <>
-struct Matrix23T<float>
+template <typename Scalar>
+struct Matrix23T
 {
-    using Scalar = float;
-    //using Matrix23 = Matrix23T<Scalar>;
-
     Scalar M00, M10;
     Scalar M01, M11;
     Scalar M02, M12;
@@ -79,12 +73,12 @@ struct Matrix23T<float>
 
     bool operator==(Matrix23T const &m2) const
     {
-        return std::fabs(M00 - m2.M00) <= ScalarEps
-            && std::fabs(M10 - m2.M10) <= ScalarEps
-            && std::fabs(M01 - m2.M01) <= ScalarEps
-            && std::fabs(M11 - m2.M11) <= ScalarEps
-            && std::fabs(M02 - m2.M02) <= ScalarEps
-            && std::fabs(M12 - m2.M12) <= ScalarEps;
+        return std::abs(M00 - m2.M00) <= ScalarEps
+            && std::abs(M10 - m2.M10) <= ScalarEps
+            && std::abs(M01 - m2.M01) <= ScalarEps
+            && std::abs(M11 - m2.M11) <= ScalarEps
+            && std::abs(M02 - m2.M02) <= ScalarEps
+            && std::abs(M12 - m2.M12) <= ScalarEps;
     }
 
     bool operator!=(Matrix23T const &m2) const
@@ -136,7 +130,7 @@ struct Matrix23T<float>
     { Col2(offset); }
 
     constexpr Angle Turn() const
-    { return Angle::FromRadians(std::atan2f(M10, M00)); }
+    { return Angle::FromRadians(std::atan2(M10, M00)); }
 
     void Turn(Angle angle)
     {
