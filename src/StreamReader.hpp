@@ -50,7 +50,6 @@ namespace Tebo
         template <>
         void Read(bool *dst, size_t count)
         {
-            static_assert(sizeof(bool) == 1);
             for (size_t i = 0; i < count; i++)
                 dst[i] = ReadBool8();
         }
