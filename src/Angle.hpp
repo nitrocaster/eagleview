@@ -90,6 +90,12 @@ public:
     constexpr Angle operator+() const
     { return *this; }
 
+    constexpr Angle operator-(Angle rhs) const
+    { return Angle(Value - rhs.Value); }
+
+    constexpr Angle operator+(Angle rhs) const
+    { return Angle(Value + rhs.Value); }
+
 private:
     static constexpr Scalar ConversionFactor = Scalar(180.0/Pi);
 };
