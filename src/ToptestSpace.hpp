@@ -17,12 +17,12 @@ namespace Toptest
     private:
         std::string name;
         BoardLayer layer;
-        Vector2 location;
+        Vector2i location;
         NetID net;
     public:
         virtual ~Contact() = 0;
-        Vector2 Location() const { return location; }
-        void Location(Vector2 v) { location = v; }
+        Vector2i Location() const { return location; }
+        void Location(Vector2i v) { location = v; }
         NetID Net() const { return net; }
         void Net(NetID id) { net = id; }
         std::string const &Name() const { return name; }
@@ -49,7 +49,7 @@ namespace Toptest
         size_t PinCount() const { return pinCount; }
         void PinCount(size_t pc) { pinCount = pc; }
         // XXX: calculate part bbox
-        Box2 BBox() const { return Box2::Empty; }
+        Box2i BBox() const { return Box2i::Empty; }
     };
 
     class Pin final : public Contact

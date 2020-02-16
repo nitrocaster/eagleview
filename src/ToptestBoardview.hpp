@@ -10,7 +10,7 @@ namespace Toptest
     class Boardview final
     {
     private:
-        std::vector<Vector2> outline;
+        std::vector<Vector2i> outline;
         ManagedStorage<Part> parts;
         ManagedStorage<Pin> pins;
         ManagedStorage<TestPoint> testPoints;
@@ -22,9 +22,9 @@ namespace Toptest
         { return origin; }
         ::Origin const &Origin() const
         { return origin; }
-        std::vector<Vector2> &Outline()
+        std::vector<Vector2i> &Outline()
         { return outline; }
-        std::vector<Vector2> const &Outline() const
+        std::vector<Vector2i> const &Outline() const
         { return outline; }
         std::vector<std::string> &Nets()
         { return netNames; }

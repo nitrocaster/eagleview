@@ -17,10 +17,10 @@ namespace Toptest
             brd(brd)
         {}
     private:
-        Box2 CalculateOutlineBox() const
+        Box2i CalculateOutlineBox() const
         {
-            auto box = Box2::Empty;
-            for (Vector2 const &v : brd.Outline())
+            auto box = Box2i::Empty;
+            for (Vector2i const &v : brd.Outline())
                 box.Merge(v);
             return box;
         }
@@ -56,16 +56,13 @@ namespace Toptest
             }
         }
 
-        static int32_t Round(float f)
-        { return static_cast<int32_t>(std::round(f)); }
-
         class StreamWriter final
         {
         protected:
             std::ostream &os;
             bool flipY = false;
             bool shift = false;
-            float outlineHeight = 0;
+            int32_t outlineHeight = 0;
 
             void SetTransform(BoardLayer layer)
             {
@@ -88,7 +85,7 @@ namespace Toptest
             StreamWriter(std::ostream &s) : os(s)
             {}
 
-            void OutlineHeight(float h) { outlineHeight = h; }
+            void OutlineHeight(int32_t h) { outlineHeight = h; }
 
             template <typename T, bool Condition = false>
             static void Fail() { static_assert(Condition); }
@@ -136,9 +133,6 @@ namespace Toptest
                 Write(buf);
             }
 
-            void Write(float v)
-            { Write(Round(v)); }
-
             void Write(BoardLayer layer)
             { Write(EncodeLayer(layer)); }
 
@@ -146,14 +140,14 @@ namespace Toptest
             void Write(Args const &...args)
             { (Write(args), ...); }
 
-            void Write(Vector2 v)
+            void Write(Vector2i v)
             {
                 if (shift)
                     v.Y -= outlineHeight;
                 Write(v.X, ' ', flipY ? -v.Y : v.Y);
             }
 
-            void Write(Box2 b)
+            void Write(Box2i b)
             { Write(b.Min, ' ', b.Max); }
 
             void Write(Part const *p)
@@ -180,8 +174,8 @@ namespace Toptest
         void Write(std::ostream &s) const
         {
             auto const rn = '\n';
-            Box2 outlineBox = CalculateOutlineBox();
-            Vector2 outlineSize = outlineBox.Size();
+            Box2i outlineBox = CalculateOutlineBox();
+            Vector2i outlineSize = outlineBox.Size();
             StreamWriter w(s);
             w.OutlineHeight(outlineSize.Y);
             // brdout: n_verts bbox_size
@@ -189,10 +183,10 @@ namespace Toptest
             // vertex2
             // ...
             auto const &outline = brd.Outline();
-            int64_t magic = 163LL*(Round(outline[0].X) + Round(outline[0].Y));
+            int64_t magic = 163LL*(outline[0].X + outline[0].Y);
             magic += 80LL*(outline.size()+1);
-            magic += 79LL*Round(outlineBox.Height());
-            magic += 84LL*Round(outlineBox.Width());
+            magic += 79LL*outlineBox.Height();
+            magic += 84LL*outlineBox.Width();
             w.Write(magic, rn);
             w.Write("BRDOUT: ", outline.size() + 1, " ", outlineSize, rn);
             for (size_t i = 0; i < outline.size() + 1; i++)
