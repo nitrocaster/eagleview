@@ -10,8 +10,21 @@
 static void PrintUsage()
 {
     puts("usage:\n"
-        "    eagleview <input format> <input path> <output format> <output path>\n");
-    // XXX: print supported formats
+        "    eagleview <input format> <input path> <output format> <output path>\n"
+        "\nsupported formats:");
+    using RegNode = BoardFormatRegistrator::Node;
+    for (RegNode const *n = RegNode::First; n; n = n->Next)
+    {
+        auto const &frep = n->Frep;
+        std::string caps;
+        if (frep.CanImport())
+            caps += 'r';
+        if (frep.CanExport())
+            caps += 'w';
+        if (caps.empty())
+            caps += "-";
+        printf("    -%s [%s] %s\n", frep.Tag(), caps.data(), frep.Desc());
+    }
 }
 
 int main(int argc, char const *argv[])
