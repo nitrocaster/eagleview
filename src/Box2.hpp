@@ -92,6 +92,26 @@ struct Box2T
     bool IsEmpty() const
     { return Min.X>Max.X || Min.Y>Max.Y; }
 
+    Box2T &operator+=(Vec2 offset)
+    {
+        Min += offset;
+        Max += offset;
+        return *this;
+    }
+
+    Box2T &operator-=(Vec2 offset)
+    {
+        Min -= offset;
+        Max -= offset;
+        return *this;
+    }
+
+    Box2T operator+(Vec2 offset) const
+    { return {Min+offset, Max+offset}; }
+
+    Box2T operator-(Vec2 offset) const
+    { return {Min-offset, Max-offset}; }
+
     template <typename T>
     operator Box2T<T>() const { return {Vector2T<T>(Min), Vector2T<T>(Max)}; }
 
