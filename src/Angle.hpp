@@ -5,13 +5,10 @@
 
 inline constexpr float Pi = 3.14159265358979323846264338327950288419f;
 
-template <typename T>
-struct AngleT;
-
-template <>
-struct AngleT<float>
+template <typename S>
+struct AngleT
 {
-    using Scalar = float;
+    using Scalar = S;
     using Angle = AngleT<Scalar>;
 
     Scalar Value;
