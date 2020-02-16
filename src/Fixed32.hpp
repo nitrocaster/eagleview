@@ -36,9 +36,9 @@ namespace Tebo
         { return std::abs(value) % decimalMultiplier; }
         operator float() const
         { return value*1.0f / decimalMultiplier; }
-        Fixed32T operator+(Fixed32T rhs)
+        Fixed32T operator+(Fixed32T rhs) const
         { return Fixed32T(value + rhs.value); }
-        Fixed32T operator-(Fixed32T rhs)
+        Fixed32T operator-(Fixed32T rhs) const
         { return Fixed32T(value - rhs.value); }
         bool operator<(Fixed32T rhs) const
         { return value < rhs.value; }
