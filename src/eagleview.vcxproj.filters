@@ -25,15 +25,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ToptestSpace.hpp">
-      <Filter>src\Toptest</Filter>
-    </ClInclude>
-    <ClInclude Include="ToptestBoardview.hpp">
-      <Filter>src\Toptest</Filter>
-    </ClInclude>
-    <ClInclude Include="ToptestWriter.hpp">
-      <Filter>src\Toptest</Filter>
-    </ClInclude>
     <ClInclude Include="Angle.hpp">
       <Filter>src\Math</Filter>
     </ClInclude>
@@ -42,9 +33,6 @@
     </ClInclude>
     <ClInclude Include="Vector2.hpp">
       <Filter>src\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="BoardviewSpace.hpp">
-      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="XMLBrowser.hpp">
       <Filter>src\XML</Filter>
@@ -58,9 +46,6 @@
     <ClInclude Include="Math.hpp">
       <Filter>src\Math</Filter>
     </ClInclude>
-    <ClInclude Include="ToptestEagleImporter.hpp">
-      <Filter>src\Toptest</Filter>
-    </ClInclude>
     <ClInclude Include="Fixed32.hpp">
       <Filter>src\Tebo</Filter>
     </ClInclude>
@@ -69,9 +54,6 @@
     </ClInclude>
     <ClInclude Include="TeboBoard.hpp">
       <Filter>src\Tebo</Filter>
-    </ClInclude>
-    <ClInclude Include="ToptestTeboImporter.hpp">
-      <Filter>src\Toptest</Filter>
     </ClInclude>
     <ClInclude Include="Common.hpp">
       <Filter>src</Filter>

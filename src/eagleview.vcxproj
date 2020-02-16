@@ -30,7 +30,6 @@
     <ClInclude Include="Angle.hpp" />
     <ClInclude Include="BoardFormat.hpp" />
     <ClInclude Include="BoardFormatRegistrator.hpp" />
-    <ClInclude Include="BoardviewSpace.hpp" />
     <ClInclude Include="CBF\Board.hpp" />
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="DynamicConvertible.hpp" />
@@ -42,12 +41,7 @@
     <ClInclude Include="StreamReader.hpp" />
     <ClInclude Include="TeboBoard.hpp" />
     <ClInclude Include="ToptestBoard.hpp" />
-    <ClInclude Include="ToptestBoardview.hpp" />
     <ClInclude Include="Box2.hpp" />
-    <ClInclude Include="ToptestEagleImporter.hpp" />
-    <ClInclude Include="ToptestSpace.hpp" />
-    <ClInclude Include="ToptestTeboImporter.hpp" />
-    <ClInclude Include="ToptestWriter.hpp" />
     <ClInclude Include="Vector2.hpp" />
     <ClInclude Include="Fixed32.hpp" />
     <ClInclude Include="XMLBrowser.hpp" />

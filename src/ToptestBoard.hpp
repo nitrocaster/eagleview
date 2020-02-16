@@ -5,8 +5,12 @@
 
 #include "Common.hpp"
 #include "BoardFormat.hpp"
-#include "ToptestSpace.hpp"
 #include "BoardFormatRegistrator.hpp"
+#include "Vector2.hpp"
+#include "Box2.hpp"
+#include <string>
+#include <vector>
+#include <memory>
 
 namespace CBF
 {
@@ -15,6 +19,64 @@ namespace CBF
 
 namespace Toptest
 {
+    using NetID = size_t;
+
+    enum class BoardLayer
+    {
+        Multilayer = 0,
+        Top = 1,
+        Bottom = 2
+    };
+
+    class Contact
+    {
+    private:
+        std::string name;
+        BoardLayer layer;
+        Vector2i location;
+        NetID net;
+    public:
+        virtual ~Contact() = 0;
+        Vector2i Location() const { return location; }
+        void Location(Vector2i v) { location = v; }
+        NetID Net() const { return net; }
+        void Net(NetID id) { net = id; }
+        std::string const &Name() const { return name; }
+        void Name(std::string n) { name = std::move(n); }
+        BoardLayer Layer() const { return layer; }
+        void Layer(BoardLayer l) { layer = l; }
+    };
+
+    inline Contact::~Contact() = default;
+
+    class Part final
+    {
+    private:
+        std::string name;
+        BoardLayer layer;
+        size_t firstPin, pinCount;
+    public:
+        std::string const &Name() const { return name; }
+        void Name(std::string n) { name = std::move(n); }
+        BoardLayer Layer() const { return layer; }
+        void Layer(BoardLayer l) { layer = l; }
+        size_t FirstPin() const { return firstPin; }
+        void FirstPin(size_t fp) { firstPin = fp; }
+        size_t PinCount() const { return pinCount; }
+        void PinCount(size_t pc) { pinCount = pc; }
+        // XXX: calculate part bbox
+        Box2i BBox() const { return Box2i::Empty; }
+    };
+
+    class Pin final : public Contact
+    {};
+
+    class TestPoint final : public Contact
+    {};
+
+    template <typename T>
+    using ManagedStorage = std::vector<std::unique_ptr<T>>;
+
     class Board : public BoardFormat
     {
     private:
