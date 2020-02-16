@@ -17,11 +17,11 @@
     <Filter Include="src\Tebo">
       <UniqueIdentifier>{b1a26e21-938a-48fc-a097-f2c2d16dc224}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CBF">
-      <UniqueIdentifier>{c78b019b-c5dd-4d1e-a74a-023d87352b2e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Eagle">
       <UniqueIdentifier>{3fce0edd-5339-406d-842c-ab75f44ee889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\CBF">
+      <UniqueIdentifier>{c78b019b-c5dd-4d1e-a74a-023d87352b2e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,7 +89,7 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="CBF\Board.hpp">
-      <Filter>CBF</Filter>
+      <Filter>src\CBF</Filter>
     </ClInclude>
     <ClInclude Include="EagleBoard.hpp">
       <Filter>src\Eagle</Filter>
