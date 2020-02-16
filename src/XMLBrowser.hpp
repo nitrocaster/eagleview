@@ -107,6 +107,16 @@ namespace tinyxml2
                     throw XMLException(std::string("Attribute not found: ") + key);
                 return value;
             }
+
+            double Double(char const *key) const noexcept(false)
+            {
+                if (!child)
+                    throw XMLException("Invalid XML element.");
+                double value;
+                if (child->QueryDoubleAttribute(key, &value) != XML_SUCCESS)
+                    throw XMLException(std::string("Attribute not found: ") + key);
+                return value;
+            }
         };
     private:
         XMLDocument *src;
