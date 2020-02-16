@@ -6,6 +6,7 @@
 #include "Common.hpp"
 #include <limits> // std::numeric_limits
 #include <cmath> // std::abs
+#include <type_traits> // enable_if, is_floating_point
 
 template <typename Scalar>
 struct Vector2T
@@ -99,6 +100,28 @@ struct Vector2T
 
     Vec2 Normalize() const
     { return *this / Length(); }
+
+private:
+    template <typename T>
+    static constexpr bool IsFP = std::is_floating_point<T>::value;
+
+public:
+    // non-fp to anything, fp to other fp
+    template <typename T,
+        typename S = Scalar,
+        typename = std::enable_if_t<!IsFP<S> || IsFP<S> && IsFP<T>>
+    >
+    constexpr operator Vector2T<T>() const
+    { return {T(X), T(Y)}; }
+
+    // fp to non-fp
+    template <typename T,
+        typename = void,
+        typename S = Scalar,
+        typename = std::enable_if_t<IsFP<S> && !IsFP<T>>
+    >
+    operator Vector2T<T>() const
+    { return {T(std::round(X)), T(std::round(Y))}; }
 
 private:
     using Limits = std::numeric_limits<Scalar>;
