@@ -8,13 +8,10 @@
 template <typename T>
 struct Vector2T;
 
-template <typename T>
-struct Box2T;
-
-template <>
-struct Box2T<float>
+template <typename S>
+struct Box2T
 {
-    using Scalar = float;
+    using Scalar = S;
     using Vec2 = Vector2T<Scalar>;
     using Box2 = Box2T<Scalar>;
 
@@ -27,7 +24,7 @@ struct Box2T<float>
         Max(max)
     {}
 
-    constexpr Box2T(Vec2 center, float radius) :
+    constexpr Box2T(Vec2 center, Scalar radius) :
         Min(center - Vec2(radius, radius)),
         Max(center + Vec2(radius, radius))
     {}
@@ -80,7 +77,7 @@ struct Box2T<float>
         Max += s;
         return *this;
     }
-    
+
     bool operator==(Box2T const &rhs) const
     { return Min==rhs.Min && Max==rhs.Max; }
     
@@ -94,9 +91,14 @@ private:
 
 public:
     static constexpr Scalar ScalarEps{Limits::epsilon()};
-    static const Box2 Empty;
+    static const Box2T Empty;
 };
 
 using Box2 = Box2T<float>;
+using Box2f = Box2T<float>;
+using Box2d = Box2T<double>;
+using Box2i = Box2T<int32_t>;
 
-inline constexpr Box2 Box2::Empty {Vector2::MinValue, Vector2::MinValue};
+template <typename Scalar>
+CONSTEXPR_DEF Box2T<Scalar> Box2T<Scalar>::Empty
+    {Vector2T<Scalar>::MaxValue, Vector2T<Scalar>::MinValue};
