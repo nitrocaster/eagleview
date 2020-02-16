@@ -197,4 +197,5 @@ using Matrix23f = Matrix23T<float>;
 using Matrix23d = Matrix23T<double>;
 using Matrix23 = Matrix23f;
 
-inline constexpr Matrix23 Matrix23::Identity{1, 0, 0, 0, 1, 0};
+template <typename Scalar>
+CONSTEXPR_DEF Matrix23T<Scalar> Matrix23T<Scalar>::Identity{1, 0, 0, 0, 1, 0};
