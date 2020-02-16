@@ -87,6 +87,9 @@ struct Box2T
     bool IsEmpty() const
     { return Min.X>Max.X || Min.Y>Max.Y; }
 
+    template <typename T>
+    operator Box2T<T>() const { return {Vector2T<T>(Min), Vector2T<T>(Max)}; }
+
 private:
     using Limits = std::numeric_limits<Scalar>;
 
