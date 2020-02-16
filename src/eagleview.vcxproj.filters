@@ -20,6 +20,9 @@
     <Filter Include="CBF">
       <UniqueIdentifier>{c78b019b-c5dd-4d1e-a74a-023d87352b2e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Eagle">
+      <UniqueIdentifier>{3fce0edd-5339-406d-842c-ab75f44ee889}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ToptestSpace.hpp">
@@ -88,6 +91,9 @@
     <ClInclude Include="CBF\Board.hpp">
       <Filter>CBF</Filter>
     </ClInclude>
+    <ClInclude Include="EagleBoard.hpp">
+      <Filter>src\Eagle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eagleview.cpp">
@@ -98,6 +104,9 @@
     </ClCompile>
     <ClCompile Include="BoardFormatRegistrator.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="EagleBoard.cpp">
+      <Filter>src\Eagle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

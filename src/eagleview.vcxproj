@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="BoardFormat.cpp" />
     <ClCompile Include="BoardFormatRegistrator.cpp" />
+    <ClCompile Include="EagleBoard.cpp" />
     <ClCompile Include="eagleview.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -31,6 +32,7 @@
     <ClInclude Include="CBF\Board.hpp" />
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="DynamicConvertible.hpp" />
+    <ClInclude Include="EagleBoard.hpp" />
     <ClInclude Include="Edge2.hpp" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="Matrix23.hpp" />
