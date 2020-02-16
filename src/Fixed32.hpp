@@ -60,7 +60,8 @@ namespace Tebo
     {
         Fixed32 X, Y;
 
-        operator Vector2() const
+        template <typename T>
+        operator Vector2T<T>() const
         { return {X, Y}; }
 
         bool operator==(Vector2S rhs) const
