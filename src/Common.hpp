@@ -3,14 +3,18 @@
 
 #pragma once
 
+#include <cstdint>
 #include <cstdio>
 
 #if defined(_MSC_VER)
 #define DEBUG_BREAK() __debugbreak()
 #define FUNCTION_NAME __FUNCTION__
+// workaround for MSVC bug
+#define CONSTEXPR_DEF const
 #elif defined(__GNUC__)
 #define DEBUG_BREAK() __builtin_trap()
 #define FUNCTION_NAME __PRETTY_FUNCTION__
+#define CONSTEXPR_DEF constexpr
 #else
 #error "Unsupported compiler"
 #endif
