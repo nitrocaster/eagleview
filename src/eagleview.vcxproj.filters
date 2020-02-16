@@ -73,9 +73,15 @@
     <ClInclude Include="OutlineBuilder.hpp">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="BoardFormat.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eagleview.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="BoardFormat.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
