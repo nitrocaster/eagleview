@@ -112,6 +112,9 @@ public:
 };
 
 using Vector2 = Vector2T<float>;
+using Vector2f = Vector2T<float>;
+using Vector2d = Vector2T<double>;
+using Vector2i = Vector2T<int32_t>;
 
 template <typename Scalar>
 CONSTEXPR_DEF Vector2T<Scalar> Vector2T<Scalar>::MinValue{Limits::min(), Limits::min()};
