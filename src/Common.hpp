@@ -24,7 +24,7 @@ inline void Fail(char const *expr, char const *func,
         "  File: %s:%d\n"
         "  Description: %s\n",
         expr, func, file, line, desc);
-    __debugbreak();
+    DEBUG_BREAK();
 }
 
 #define R_ASSERT(expr) \
