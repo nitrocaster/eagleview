@@ -114,6 +114,9 @@
     <ClCompile Include="ToptestBoard.cpp">
       <Filter>src\Toptest</Filter>
     </ClCompile>
+    <ClCompile Include="TeboBoard.cpp">
+      <Filter>src\Tebo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="eagleview.natvis" />

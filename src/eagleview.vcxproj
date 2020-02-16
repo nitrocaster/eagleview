@@ -23,6 +23,7 @@
     <ClCompile Include="BoardFormatRegistrator.cpp" />
     <ClCompile Include="EagleBoard.cpp" />
     <ClCompile Include="eagleview.cpp" />
+    <ClCompile Include="TeboBoard.cpp" />
     <ClCompile Include="ToptestBoard.cpp" />
   </ItemGroup>
   <ItemGroup>
