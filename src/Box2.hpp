@@ -84,7 +84,8 @@ struct Box2T
     bool operator!=(Box2T const &rhs) const
     { return Min!=rhs.Min || Max!=rhs.Max; }
 
-    bool IsEmpty() const { return *this == Empty; }
+    bool IsEmpty() const
+    { return Min.X>Max.X || Min.Y>Max.Y; }
 
 private:
     using Limits = std::numeric_limits<Scalar>;
