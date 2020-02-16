@@ -79,6 +79,9 @@
     <ClInclude Include="BoardFormatRegistrator.hpp">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="DynamicConvertible.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eagleview.cpp">
