@@ -163,6 +163,8 @@ public:
     {
         Index ia = FindVertex(edge.A);
         Index ib = FindVertex(edge.B);
+        if (ia == ib) // skip degenerate edges
+            return;
         VertexData &a = vertices[ia];
         VertexData &b = vertices[ib];
         if (!a.AddNeighbor(b.Self))
