@@ -19,6 +19,11 @@ struct Box2T
 
     Box2T() = default;
 
+    constexpr Box2T(Vec2 size) :
+        Min(size/2),
+        Max(-size/2)
+    {}
+
     constexpr Box2T(Vec2 min, Vec2 max) :
         Min(min),
         Max(max)
