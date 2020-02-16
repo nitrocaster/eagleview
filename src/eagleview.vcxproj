@@ -23,6 +23,7 @@
     <ClCompile Include="BoardFormatRegistrator.cpp" />
     <ClCompile Include="EagleBoard.cpp" />
     <ClCompile Include="eagleview.cpp" />
+    <ClCompile Include="ToptestBoard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angle.hpp" />
@@ -39,6 +40,7 @@
     <ClInclude Include="OutlineBuilder.hpp" />
     <ClInclude Include="StreamReader.hpp" />
     <ClInclude Include="TeboBoard.hpp" />
+    <ClInclude Include="ToptestBoard.hpp" />
     <ClInclude Include="ToptestBoardview.hpp" />
     <ClInclude Include="Box2.hpp" />
     <ClInclude Include="ToptestEagleImporter.hpp" />

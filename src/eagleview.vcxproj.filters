@@ -94,6 +94,9 @@
     <ClInclude Include="EagleBoard.hpp">
       <Filter>src\Eagle</Filter>
     </ClInclude>
+    <ClInclude Include="ToptestBoard.hpp">
+      <Filter>src\Toptest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eagleview.cpp">
@@ -107,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="EagleBoard.cpp">
       <Filter>src\Eagle</Filter>
+    </ClCompile>
+    <ClCompile Include="ToptestBoard.cpp">
+      <Filter>src\Toptest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
