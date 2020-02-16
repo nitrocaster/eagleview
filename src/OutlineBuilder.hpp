@@ -34,13 +34,13 @@ private:
         
     struct VertexData
     {
-        Vector2 V;
+        Vector2d V;
         Index Self;
         std::array<Index, 2> Neighbors{};
 
         VertexData() = default;
 
-        VertexData(Vector2 v, Index self) :
+        VertexData(Vector2d v, Index self) :
             V(v),
             Self(self)
         {}
@@ -63,18 +63,18 @@ private:
         
     struct Vector2Hasher
     {
-        uint64_t operator()(Vector2 const &vec) const noexcept
+        uint64_t operator()(Vector2d const &vec) const noexcept
         {
-            return uint64_t(double(vec.X)*73856093) ^ uint64_t(double(vec.Y)*83492791);
+            return uint64_t(vec.X*73856093) ^ uint64_t(vec.Y*83492791);
         }
     };
 
     std::vector<VertexData> vertices;
-    std::unordered_map<Vector2, Index, Vector2Hasher> vertexSet;
+    std::unordered_map<Vector2d, Index, Vector2Hasher> vertexSet;
     using Loop = std::deque<Index>;
     std::vector<Loop> loops;
 
-    Index FindVertex(Vector2 v)
+    Index FindVertex(Vector2d v)
     {
         Index &index = vertexSet[v];
         if (!index.Valid())
@@ -86,7 +86,7 @@ private:
         return index;
     }
 
-    std::string VectorToString(Vector2 v)
+    std::string VectorToString(Vector2d v)
     { return std::to_string(v.X) + ", " + std::to_string(v.Y); }
 
     Index NextVertex(VertexData const &current, Index prev)
@@ -150,16 +150,16 @@ private:
         return loop;
     }
 
-    Box2 CalculateBBox(Loop const& loop) const
+    Box2d CalculateBBox(Loop const& loop) const
     {
-        Box2 bbox(vertices[*loop.begin()].V, 0);
+        Box2d bbox(vertices[*loop.begin()].V, 0);
         for (Index i : loop)
             bbox.Merge(vertices[i].V);
         return bbox;
     }
 
 public:
-    void AddEdge(Edge2 edge)
+    void AddEdge(Edge2d edge)
     {
         Index ia = FindVertex(edge.A);
         Index ib = FindVertex(edge.B);
@@ -177,7 +177,7 @@ public:
         }
     }
 
-    void Build(std::vector<Vector2> &output)
+    void Build(std::vector<Vector2i> &output)
     {
         if (vertices.empty())
             return;
@@ -187,10 +187,10 @@ public:
         for (auto it = visited.begin(); it != visited.end(); it = std::find(it, visited.end(), false))
             loops.push_back(NextLoop(visited, Index(it - visited.begin())));
         Loop const *maxLoop = &loops.front();
-        Box2 maxLoopBBox(vertices.front().V, 0);
+        Box2d maxLoopBBox(vertices.front().V, 0);
         for (Loop const &loop : loops)
         {
-            Box2 bb = CalculateBBox(loop);
+            Box2d bb = CalculateBBox(loop);
             if (bb.Contains(maxLoopBBox))
             {
                 maxLoopBBox = bb;
