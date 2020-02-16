@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-inline constexpr float Pi = 3.14159265358979323846264338327950288419f;
+inline constexpr double Pi = 3.14159265358979323846;
 
 template <typename S>
 struct AngleT
@@ -23,12 +23,12 @@ private:
         if (s <= -2*Pi)
         {
             auto k = std::round(-s/(2*Pi));
-            s += k*Scalar(2*Pi);
+            s += Scalar(k*2*Pi);
         }
         else if (s >= 2*Pi)
         {
             auto k = std::round(s/(2*Pi));
-            s -= k*Scalar(2*Pi);
+            s -= Scalar(k*2*Pi);
         }
         return s;
     }
@@ -91,7 +91,7 @@ public:
     { return *this; }
 
 private:
-    static constexpr Scalar ConversionFactor = 360.0f/(2*Pi);
+    static constexpr Scalar ConversionFactor = Scalar(180.0/Pi);
 };
 
 using Angle = AngleT<float>;
