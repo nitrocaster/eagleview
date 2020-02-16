@@ -113,7 +113,11 @@ public:
 
 using Vector2 = Vector2T<float>;
 
-inline constexpr Vector2 Vector2::MinValue{Limits::min(), Limits::min()};
-inline constexpr Vector2 Vector2::MaxValue{Limits::max(), Limits::max()};
-inline constexpr Vector2 Vector2::Epsilon{ScalarEps, ScalarEps};
-inline constexpr Vector2 Vector2::Origin{0, 0};
+template <typename Scalar>
+CONSTEXPR_DEF Vector2T<Scalar> Vector2T<Scalar>::MinValue{Limits::min(), Limits::min()};
+template <typename Scalar>
+CONSTEXPR_DEF Vector2T<Scalar> Vector2T<Scalar>::MaxValue{Limits::max(), Limits::max()};
+template <typename Scalar>
+CONSTEXPR_DEF Vector2T<Scalar> Vector2T<Scalar>::Epsilon{ScalarEps, ScalarEps};
+template <typename Scalar>
+CONSTEXPR_DEF Vector2T<Scalar> Vector2T<Scalar>::Origin{0, 0};
