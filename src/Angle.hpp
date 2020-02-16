@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <cmath>
+
 inline constexpr float Pi = 3.14159265358979323846264338327950288419f;
 
 template <typename S>
@@ -16,8 +18,23 @@ struct AngleT
     AngleT() = default;
 
 private:
+    static constexpr Scalar Normalize(Scalar s)
+    {
+        if (s <= -2*Pi)
+        {
+            auto k = std::round(-s/(2*Pi));
+            s += k*Scalar(2*Pi);
+        }
+        else if (s >= 2*Pi)
+        {
+            auto k = std::round(s/(2*Pi));
+            s -= k*Scalar(2*Pi);
+        }
+        return s;
+    }
+
     constexpr AngleT(Scalar radians) :
-        Value(radians)
+        Value(Normalize(radians))
     {}
 
     static constexpr Scalar RadiansToDegrees(Scalar radians)
@@ -50,13 +67,11 @@ public:
         Value = DegreesToRadians(degrees);
         return *this;
     }
-
     constexpr Angle operator*(Scalar factor) const
     { return Angle(Value*factor); }
-
     constexpr Angle &operator*=(Scalar factor)
     {
-        Value *= factor;
+        Value = Normalize(Value*factor);
         return *this;
     }
 
@@ -65,7 +80,7 @@ public:
 
     constexpr Angle &operator/=(Scalar factor)
     {
-        Value /= factor;
+        Value = Normalize(Value/factor);
         return *this;
     }
 
