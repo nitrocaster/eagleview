@@ -38,6 +38,10 @@ struct Edge2T
 
     Scalar Length() const
     { return (B-A).Length(); }
+
+    template <typename T>
+    operator Edge2T<T>() const
+    { return {A, B}; }
 };
 
 using Edge2 = Edge2T<float>;
