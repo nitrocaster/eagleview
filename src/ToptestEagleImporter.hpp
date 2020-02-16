@@ -529,7 +529,7 @@ namespace Toptest
                 brd.Parts().push_back(std::move(part));
                 auto elementTransform = Matrix23::Translation(element.Pos);
                 if (element.Layer == BoardLayer::Bottom)
-                    elementTransform *= Matrix23::Rotation(-element.Rot) * Matrix23::Scaling({-1, 1});
+                    elementTransform *= Matrix23::Rotation(-element.Rot) * Matrix23::Scaling(Vector2{-1, 1});
                 else
                     elementTransform *= Matrix23::Rotation(element.Rot);
                 for (auto const &[padName, pad] : pkg.Pads)

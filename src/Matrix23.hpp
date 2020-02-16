@@ -17,7 +17,7 @@ struct Matrix23T
 
     Matrix23T() = default;
 
-     constexpr Matrix23T(Scalar m00, Scalar m01, Scalar m02, Scalar m10, Scalar m11, Scalar m12) :
+    constexpr Matrix23T(Scalar m00, Scalar m01, Scalar m02, Scalar m10, Scalar m11, Scalar m12) :
         M00(m00),
         M10(m10),
         M01(m01),
@@ -35,7 +35,8 @@ struct Matrix23T
         };
     }
 
-    constexpr Vector2 operator*(Vector2 v1) const
+    template <typename T>
+    constexpr Vector2T<T> operator*(Vector2T<T> v1) const
     {
         return
         {
@@ -84,7 +85,8 @@ struct Matrix23T
     bool operator!=(Matrix23T const &m2) const
     { return !(*this == m2); }
 
-    static constexpr Matrix23T Translation(Vector2 offset)
+    template <typename T>
+    static constexpr Matrix23T Translation(Vector2T<T> offset)
     {
         return
         {
@@ -104,7 +106,8 @@ struct Matrix23T
         };
     }
 
-    static constexpr Matrix23T Scaling(Vector2 scale)
+    template <typename T>
+    static constexpr Matrix23T Scaling(Vector2T<T> scale)
     {
         return
         {
@@ -123,10 +126,11 @@ struct Matrix23T
         };
     }
 
-    constexpr Vector2 Offset() const
+    constexpr Vector2T<Scalar> Offset() const
     { return Col2(); }
 
-    constexpr void Offset(Vector2 offset)
+    template <typename T>
+    constexpr void Offset(Vector2T<T> offset)
     { Col2(offset); }
 
     constexpr Angle Turn() const
@@ -142,7 +146,7 @@ struct Matrix23T
         *this *= Rotation(angle);
     }
 
-    Vector2 Scale() const
+    Vector2T<Scalar> Scale() const
     {
         return
         {
@@ -151,35 +155,39 @@ struct Matrix23T
         };
     }
 
-    void Scale(Vector2 value)
+    template <typename T>
+    void Scale(Vector2T<T> value)
     {
-        Vector2 scale = Scale();
-        *this *= Scaling(Vector2(1/scale.X, 1/scale.Y));
+        auto scale = Scale();
+        *this *= Scaling({1/scale.X, 1/scale.Y});
         *this *= Scaling(value);
     }
 
-    constexpr Vector2 Col0() const
+    constexpr Vector2T<Scalar> Col0() const
     { return {M00, M10}; }
 
-    constexpr void Col0(Vector2 value)
+    template <typename T>
+    constexpr void Col0(Vector2T<T> value)
     {
         M00 = value.X;
         M10 = value.Y;
     }
 
-    constexpr Vector2 Col1() const
+    constexpr Vector2T<Scalar> Col1() const
     { return {M01, M11}; }
 
-    constexpr void Col1(Vector2 value)
+    template <typename T>
+    constexpr void Col1(Vector2T<T> value)
     {
         M01 = value.X;
         M11 = value.Y;
     }
 
-    constexpr Vector2 Col2() const
+    constexpr Vector2T<Scalar> Col2() const
     { return {M02, M12}; }
 
-    constexpr void Col2(Vector2 value)
+    template <typename T>
+    constexpr void Col2(Vector2T<T> value)
     {
         M02 = value.X;
         M12 = value.Y;
