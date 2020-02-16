@@ -28,6 +28,7 @@
     <ClInclude Include="Edge2.hpp" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="Matrix23.hpp" />
+    <ClInclude Include="OutlineBuilder.hpp" />
     <ClInclude Include="StreamReader.hpp" />
     <ClInclude Include="TeboBoard.hpp" />
     <ClInclude Include="ToptestBoardview.hpp" />
