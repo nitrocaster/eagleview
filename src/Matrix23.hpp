@@ -17,7 +17,7 @@ struct Matrix23T
 
     Matrix23T() = default;
 
-    constexpr Matrix23T(Scalar m00, Scalar m01, Scalar m02, Scalar m10, Scalar m11, Scalar m12) :
+     constexpr Matrix23T(Scalar m00, Scalar m01, Scalar m02, Scalar m10, Scalar m11, Scalar m12) :
         M00(m00),
         M10(m10),
         M01(m01),
@@ -193,6 +193,8 @@ public:
     static const Matrix23T Identity;
 };
 
-using Matrix23 = Matrix23T<float>;
+using Matrix23f = Matrix23T<float>;
+using Matrix23d = Matrix23T<double>;
+using Matrix23 = Matrix23f;
 
 inline constexpr Matrix23 Matrix23::Identity{1, 0, 0, 0, 1, 0};
