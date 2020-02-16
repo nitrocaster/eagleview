@@ -20,11 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BoardFormat.cpp" />
+    <ClCompile Include="BoardFormatRegistrator.cpp" />
     <ClCompile Include="eagleview.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angle.hpp" />
     <ClInclude Include="BoardFormat.hpp" />
+    <ClInclude Include="BoardFormatRegistrator.hpp" />
     <ClInclude Include="BoardviewSpace.hpp" />
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="Edge2.hpp" />

@@ -76,12 +76,18 @@
     <ClInclude Include="BoardFormat.hpp">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="BoardFormatRegistrator.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eagleview.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="BoardFormat.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="BoardFormatRegistrator.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
