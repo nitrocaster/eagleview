@@ -28,6 +28,7 @@
     <ClInclude Include="BoardFormat.hpp" />
     <ClInclude Include="BoardFormatRegistrator.hpp" />
     <ClInclude Include="BoardviewSpace.hpp" />
+    <ClInclude Include="CBF\Board.hpp" />
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="DynamicConvertible.hpp" />
     <ClInclude Include="Edge2.hpp" />

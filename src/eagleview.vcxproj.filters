@@ -17,6 +17,9 @@
     <Filter Include="src\Tebo">
       <UniqueIdentifier>{b1a26e21-938a-48fc-a097-f2c2d16dc224}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CBF">
+      <UniqueIdentifier>{c78b019b-c5dd-4d1e-a74a-023d87352b2e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ToptestSpace.hpp">
@@ -81,6 +84,9 @@
     </ClInclude>
     <ClInclude Include="DynamicConvertible.hpp">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="CBF\Board.hpp">
+      <Filter>CBF</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
