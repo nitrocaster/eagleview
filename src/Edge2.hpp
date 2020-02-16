@@ -41,3 +41,6 @@ struct Edge2T
 };
 
 using Edge2 = Edge2T<float>;
+using Edge2f = Edge2T<float>;
+using Edge2d = Edge2T<double>;
+using Edge2i = Edge2T<int32_t>;
