@@ -3,8 +3,6 @@
 
 #include "BoardFormat.hpp"
 
-std::map<std::string, BoardFormatRep const &> BoardFormat::registry;
-
 void BoardFormat::Register(BoardFormatRep const &frep)
 {
     auto it = registry.find(frep.Tag());

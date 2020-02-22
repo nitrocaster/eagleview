@@ -4,10 +4,6 @@
 #include "BoardFormatRegistrator.hpp"
 #include "BoardFormat.hpp"
 
-BoardFormatRegistrator::Node *BoardFormatRegistrator::Node::First = nullptr;
-BoardFormatRegistrator::Node *BoardFormatRegistrator::Node::Last = nullptr;
-size_t BoardFormatRegistrator::Node::Count = 0;
-
 BoardFormatRegistrator::Node::Node(BoardFormatRep const &frep) :
     Frep(frep)
 {

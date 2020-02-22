@@ -15,8 +15,8 @@ public:
         BoardFormatRep const &Frep;
         bool Done = false;
         Node *Prev, *Next;
-        static Node *First, *Last;
-        static size_t Count;
+        static inline Node *First = nullptr, *Last = nullptr;
+        static inline size_t Count = 0;
 
         Node(BoardFormatRep const &frep);
         ~Node();

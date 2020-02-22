@@ -49,7 +49,7 @@ public:
     virtual BoardFormatRep const &Frep() const = 0;
     
 private:
-    static std::map<std::string, BoardFormatRep const &> registry;
+    static inline std::map<std::string, BoardFormatRep const &> registry;
 
 public:
     static void Register(BoardFormatRep const &frep);
