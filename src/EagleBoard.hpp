@@ -10,7 +10,6 @@
 #include "Matrix23.hpp"
 #include <map>
 #include <unordered_map>
-#include <charconv> // std::from_chars
 
 namespace Eagle
 {

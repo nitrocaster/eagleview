@@ -10,6 +10,8 @@
 #include <streambuf> // istreambuf_iterator
 #include <algorithm>
 #include <array>
+#include <cstdlib>
+#include <cerrno>
 
 namespace Eagle
 {
@@ -50,10 +52,9 @@ namespace Eagle
                     info.Mirror = true;
                     break;
                 case 'R':
-                    double degrees = 0;
-                    auto result = std::from_chars(
-                        rotStr.data()+i+1, rotStr.data() + rotStr.size(), degrees);
-                    if (result.ec != std::errc())
+                    char *end;
+                    double degrees = std::strtod(rotStr.data()+i+1, &end);
+                    if (errno)
                         throw std::runtime_error("Can't parse 'rot' attribute: invalid angle");
                     info.Rot = Angle::FromDegrees(degrees);
                     i = rotStr.size();
