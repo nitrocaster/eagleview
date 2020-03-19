@@ -47,13 +47,6 @@ namespace Tebo
             rPos = Tell();
         }
 
-        template <>
-        void Read(bool *dst, size_t count)
-        {
-            for (size_t i = 0; i < count; i++)
-                dst[i] = ReadBool8();
-        }
-
         uint16_t ReadU16()
         {
             uint16_t r;
@@ -94,4 +87,12 @@ namespace Tebo
             return s;
         }
     };
+
+    template <>
+    void StreamReader::Read(bool *dst, size_t count)
+    {
+        for (size_t i = 0; i < count; i++)
+            dst[i] = ReadBool8();
+    }
+
 } // namespace Tebo
