@@ -6,6 +6,7 @@
 #include "OutlineBuilder.hpp"
 #include "Matrix23.hpp"
 #include <optional>
+#include <cstring> // std::strlen
 
 namespace Toptest
 {
@@ -99,21 +100,21 @@ namespace Toptest
         void Write(int32_t v)
         {
             char buf[16];
-            _itoa_s(v, buf, 10);
+            std::snprintf(buf, sizeof(buf), "%d", v);
             Write(buf);
         }
 
         void Write(int64_t v)
         {
             char buf[24];
-            _i64toa_s(v, buf, sizeof(buf), 10);
+            std::snprintf(buf, sizeof(buf), "%lld", v);
             Write(buf);
         }
 
         void Write(size_t v)
         {
             char buf[24];
-            _ui64toa_s(v, buf, sizeof(buf), 10);
+            std::snprintf(buf, sizeof(buf), "%zu", v);
             Write(buf);
         }
 
