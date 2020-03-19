@@ -131,7 +131,7 @@ namespace Tebo
     
     struct Pad
     {
-        Shape *Shape;
+        Tebo::Shape *Shape;
         int32_t Net;
         uint32_t DCode;
         Vector2S Pos;
