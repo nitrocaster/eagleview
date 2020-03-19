@@ -1,8 +1,6 @@
 // MIT License
 // Copyright (c) 2020 Pavel Kovalenko
 
-#pragma once
-
 #include "EagleBoard.hpp"
 #include "CBF/Board.hpp"
 #include "BoardFormatRegistrator.hpp"
