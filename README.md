@@ -20,7 +20,6 @@ WIP
 
 TODO
 ---
-- Makefile
 - Altium Designer PcbDoc support
 
 Bugs
