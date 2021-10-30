@@ -55,6 +55,7 @@ namespace Toptest
         std::string name;
         BoardLayer layer;
         size_t firstPin, pinCount;
+        Box2i bbox = Box2i::Empty;
     public:
         std::string const &Name() const { return name; }
         void Name(std::string n) { name = std::move(n); }
@@ -64,8 +65,8 @@ namespace Toptest
         void FirstPin(size_t fp) { firstPin = fp; }
         size_t PinCount() const { return pinCount; }
         void PinCount(size_t pc) { pinCount = pc; }
-        // XXX: calculate part bbox
-        Box2i BBox() const { return Box2i::Empty; }
+        Box2i BBox() const { return bbox; }
+        void BBox(Box2i const &b) { bbox = b; }
     };
 
     class Pin final : public Contact

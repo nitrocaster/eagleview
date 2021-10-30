@@ -242,6 +242,16 @@ namespace Toptest
             dstPart->Layer(GetLayerCode(src, part.Layer));
             dstPart->FirstPin(pins.size());
             dstPart->PinCount(part.Pins.size());
+            auto verts = {
+                part.Bbox.Min,
+                {part.Bbox.Min.X, part.Bbox.Max.Y},
+                part.Bbox.Max,
+                {part.Bbox.Max.X, part.Bbox.Min.Y}
+            };
+            auto bbox = Box2d::Empty;
+            for (auto v : verts)
+                bbox.Merge(Matrix23d::Rotation(part.Turn) * v);
+            dstPart->BBox(bbox);
             // note 1: assuming pins are sorted by id in ascending order
             // note 2: in Tebo board parts can not have pins on multiple layers
             for (CBF::Pin const &pin : part.Pins)
@@ -254,7 +264,7 @@ namespace Toptest
                 R_ASSERT(pin.Pad < srcLayer->Pads.size());
                 auto const &pad = srcLayer->Pads[pin.Pad];
                 dstPin->Location(pad.Pos);
-                dstPin->Net(pad.Net+1);                
+                dstPin->Net(pad.Net+1);
                 pins.push_back(std::move(dstPin));
             }
             parts.push_back(std::move(dstPart));
