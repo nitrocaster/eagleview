@@ -14,9 +14,23 @@ Examples
 ![b2_tebo](doc/img/b2_tebo.png)
 ![b2_toptest](doc/img/b2_toptest.png)
 
+Prerequisites
+---
+- C++17 compiler (tested with GCC 9.3 and MSVC 19.25)
+- [CMake](https://cmake.org) 3.16+
+
 Installation
 ---
-WIP
+```
+git clone https://github.com/nitrocaster/eagleview.git
+cd eagleview
+git submodule update --init --recursive
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX="../pkg/" ..
+cmake --build . --config Release
+cmake --install .
+```
+Once done, binaries can be found in `pkg/bin`.
 
 TODO
 ---
