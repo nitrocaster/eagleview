@@ -50,8 +50,8 @@ namespace Eagle
                     info.Mirror = true;
                     break;
                 case 'R':
-                    char *end;
-                    double degrees = std::strtod(rotStr.data()+i+1, &end);
+                    errno = 0;
+                    double degrees = std::strtod(rotStr.data()+i+1, nullptr);
                     if (errno)
                         throw std::runtime_error("Can't parse 'rot' attribute: invalid angle");
                     info.Rot = Angle::FromDegrees(degrees);
