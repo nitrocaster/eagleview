@@ -588,6 +588,7 @@ namespace Tebo
                 DrillHoles.emplace_back().Load(r);
                 continue;
             case 0x0A:
+            case 0x0B:
                 DrillSlots.emplace_back().Load(r);
                 continue;
             default:
