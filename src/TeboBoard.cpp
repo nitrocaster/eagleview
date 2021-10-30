@@ -582,18 +582,17 @@ namespace Tebo
         DrillSlots.reserve(100);
         for (uint32_t i = 0; i < drillCount; i++)
         {
-            auto code = r.ReadU8();
-            if (code == 0x08)
+            switch (r.ReadU8())
             {
+            case 0x08:
                 DrillHoles.emplace_back().Load(r);
                 continue;
-            }
-            if (code == 0x0A)
-            {
+            case 0x0A:
                 DrillSlots.emplace_back().Load(r);
                 continue;
+            default:
+                R_ASSERT(!"Unrecognized drill code");
             }
-            R_ASSERT(!"Unrecognized drill code");
         }
     }
 
