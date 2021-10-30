@@ -189,6 +189,11 @@ namespace Eagle
             buf.reserve(size_t(fs.tellg()));
             fs.seekg(0, std::ios::beg);
             buf.assign((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
+            const std::string xmlPrefix = "<?xml";
+            if (buf.compare(0, xmlPrefix.size(), xmlPrefix))
+            {
+                R_ASSERT(!"Binary Eagle BRD format is not supported. Resave with a newer version and try again.");
+            }
             if (src.Parse(buf.c_str()) != tinyxml2::XML_SUCCESS)
             {
                 printf("! %s\n", src.ErrorStr());
