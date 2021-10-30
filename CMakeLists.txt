@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.16)
 project(eagleview)
 
 add_compile_options("$<$<CONFIG:DEBUG>:-DDEBUG>")
+add_compile_options("$<$<CONFIG:RELEASE>:-DNDEBUG>")
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /std:c++latest /permissive-")
@@ -16,6 +17,3 @@ include_directories(src)
 
 add_subdirectory(externals/tinyxml2)
 add_subdirectory(src)
-
-install(TARGETS eagleview
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

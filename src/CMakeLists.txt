@@ -1,13 +1,13 @@
 set(EV_SRC_CBF
     CBF/Board.hpp
 )
-source_group(src\\CBF FILES ${EV_SRC_CBF})
+source_group(src/CBF FILES ${EV_SRC_CBF})
 
 set(EV_SRC_EAGLE
     EagleBoard.cpp
-    EagleBoard.hpp    
+    EagleBoard.hpp
 )
-source_group(src\\Eagle FILES ${EV_SRC_EAGLE})
+source_group(src/Eagle FILES ${EV_SRC_EAGLE})
 
 set(EV_SRC_MATH
     Angle.hpp
@@ -17,32 +17,32 @@ set(EV_SRC_MATH
     Matrix23.hpp
     Vector2.hpp
 )
-source_group(src\\Math FILES ${EV_SRC_MATH})
+source_group(src/Math FILES ${EV_SRC_MATH})
 
 set(EV_SRC_TEBO
     Fixed32.hpp
-    StreamReader.hpp    
+    StreamReader.hpp
     TeboBoard.cpp
     TeboBoard.hpp
 )
-source_group(src\\Tebo FILES ${EV_SRC_TEBO})
+source_group(src/Tebo FILES ${EV_SRC_TEBO})
 
 set(EV_SRC_TOPTEST
     ToptestBoard.cpp
-    ToptestBoard.hpp    
+    ToptestBoard.hpp
 )
-source_group(src\\TopTest FILES ${EV_SRC_TOPTEST})
+source_group(src/TopTest FILES ${EV_SRC_TOPTEST})
 
 set(EV_SRC_XML
     XMLBrowser.hpp
 )
-source_group(src\\XML FILES ${EV_SRC_XML})
+source_group(src/XML FILES ${EV_SRC_XML})
 
 set(EV_SRC
     BoardFormat.cpp
-    BoardFormat.hpp    
+    BoardFormat.hpp
     BoardFormatRegistrator.cpp
-    BoardFormatRegistrator.hpp    
+    BoardFormatRegistrator.hpp
     Common.hpp
     DynamicConvertible.hpp
     eagleview.cpp
@@ -70,3 +70,10 @@ endif()
 
 add_executable(eagleview ${EV_SOURCES})
 target_link_libraries(eagleview ${EV_LIBRARIES})
+
+set_target_properties(eagleview PROPERTIES CXX_VISIBILITY_PRESET hidden)
+
+include(GNUInstallDirs)
+set_target_properties(eagleview PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
+
+install(TARGETS eagleview)
