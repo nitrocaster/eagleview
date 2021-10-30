@@ -275,10 +275,9 @@ namespace Toptest
         auto outlineBox = Box2i::Empty;
         for (Vector2i const &v : outline)
             outlineBox.Merge(v);
-        Vector2i outlineSize = outlineBox.Size();
         StreamWriter w(fs);
-        w.OutlineHeight(outlineSize.Y);
-        // brdout: n_verts bbox_size
+        w.OutlineHeight(outlineBox.Size().Y);
+        // brdout: n_verts bbox_max
         // vertex1
         // vertex2
         // ...
@@ -287,7 +286,7 @@ namespace Toptest
         magic += 79LL*outlineBox.Height();
         magic += 84LL*outlineBox.Width();
         w.Write(magic, rn);
-        w.Write("BRDOUT: ", outline.size() + 1, " ", outlineSize, rn);
+        w.Write("BRDOUT: ", outline.size() + 1, " ", outlineBox.Max, rn);
         for (size_t i = 0; i < outline.size() + 1; i++)
             w.Write(outline[i % outline.size()], rn);
         w.Write(rn);
