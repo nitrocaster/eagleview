@@ -122,7 +122,7 @@ namespace Eagle
     Board::LayerInfo Board::ExtractLayerInfo(XMLProxy &item)
     {
         LayerInfo layer{};
-        layer.Number = static_cast<LayerId>(item.Int32("number"));
+        layer.Number = LayerId(item.Int32("number"));
         layer.Name = item.String("name");
         layer.Color = item.Int32("color");
         layer.Fill = item.Int32("fill");
@@ -172,6 +172,8 @@ namespace Eagle
         case LayerId::Dimension:
             outline.push_back(std::move(s));
             break;
+        default:
+            break;
         }
     }
 
@@ -182,7 +184,7 @@ namespace Eagle
             std::string buf;
             buf.reserve(size_t(fs.tellg()));
             fs.seekg(0, std::ios::beg);
-            buf.assign((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
+            buf.assign(std::istreambuf_iterator<char>(fs), std::istreambuf_iterator<char>());
             const std::string xmlPrefix = "<?xml";
             if (buf.compare(0, xmlPrefix.size(), xmlPrefix))
             {
@@ -408,11 +410,7 @@ namespace Eagle
                 tempPkgInfos[{libName, pkgName}] = PkgInfo{bbox, uint32_t(cbf.Decals.size())};
                 CBF::Decal decal;
                 decal.Name = pkgName;
-                decal.Outline.reserve(4);
-                decal.Outline.push_back(bbox.Min);
-                decal.Outline.push_back(bbox.Min+bbox.Height());
-                decal.Outline.push_back(bbox.Max);
-                decal.Outline.push_back(bbox.Max-bbox.Height());
+                decal.Outline = {bbox.Min, bbox.Min+bbox.Height(), bbox.Max, bbox.Max-bbox.Height()};
                 cbf.Decals.push_back(std::move(decal));
             }
         }

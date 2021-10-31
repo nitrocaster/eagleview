@@ -135,22 +135,22 @@ namespace Toptest
         void Write(Box2i b)
         { Write(b.Min, ' ', b.Max); }
 
-        void Write(Part const *p)
+        void Write(Part const &p)
         {
-            Write(p->Name(), ' ', p->BBox(), ' ', p->FirstPin(), ' ', p->Layer());
+            Write(p.Name(), ' ', p.BBox(), ' ', p.FirstPin(), ' ', p.Layer());
         }
 
-        void Write(Pin const *p)
+        void Write(Pin const &p)
         {
-            SetTransform(p->Layer());
-            Write(p->Location(), ' ', p->Net(), ' ', p->Layer());
+            SetTransform(p.Layer());
+            Write(p.Location(), ' ', p.Net(), ' ', p.Layer());
             ResetTransform();
         }
 
-        void Write(TestPoint const *n)
+        void Write(TestPoint const &n)
         {
-            SetTransform(n->Layer());
-            Write(n->Location(), ' ', n->Net(), ' ', n->Layer());
+            SetTransform(n.Layer());
+            Write(n.Location(), ' ', n.Net(), ' ', n.Layer());
             ResetTransform();
         }
     };
@@ -169,14 +169,14 @@ namespace Toptest
     {
         if (index >= src.Layers.size())
             return nullptr;
-        return *src.Layers[index].get();
+        return *src.Layers[index];
     }
 
     static CBF::LogicLayer const *GetLogicLayer(CBF::Board const &src, uint32_t index)
     {
         if (index >= src.Layers.size())
             return nullptr;
-        return *src.Layers[index].get();
+        return *src.Layers[index];
     }
 
     void Board::BuildOutline(CBF::Board const &src)
@@ -310,19 +310,19 @@ namespace Toptest
         // name bbox.min.x bbox.min.y bbox.max.x bbox.max.y first_pin layer
         w.Write("PARTS: ", parts.size(), rn);
         for (auto const &part : parts)
-            w.Write(part.get(), rn);
+            w.Write(*part, rn);
         w.Write(rn);
         // pins: size
         // pos.x pos.y net_index layer
         w.Write("PINS: ", pins.size(), rn);
         for (auto const &pin : pins)
-            w.Write(pin.get(), rn);
+            w.Write(*pin, rn);
         w.Write(rn);
         // nails: size
         // pos.x pos.y net_index layer
         w.Write("NAILS: ", testPoints.size(), rn);
         for (auto const &nail : testPoints)
-            w.Write(nail.get(), rn);
+            w.Write(*nail, rn);
     }
 
     static Board::Rep const Frep;

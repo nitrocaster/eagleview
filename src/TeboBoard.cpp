@@ -14,7 +14,7 @@ namespace Tebo
             R_ASSERT(one == 1);
         }
         auto const size = r.ReadVec2S();
-        auto const type = static_cast<ShapeType>(r.ReadU32());
+        auto const type = ShapeType(r.ReadU32());
         switch (type)
         {
         case ShapeType::Round:
@@ -155,7 +155,7 @@ namespace Tebo
             uint32_t const type = r.ReadU32();
             if (!type)
                 continue;
-            return static_cast<ObjectType>(type);
+            return ObjectType(type);
         }
         return ObjectType::Undefined;
     }
@@ -185,13 +185,13 @@ namespace Tebo
     {
         // 3, 2, 1 # logic layer
         // 1, 2, 1 # thru layer (from 0 to 0)
-        uint32_t const pos = static_cast<uint32_t>(r.Tell());
+        uint32_t const pos(r.Tell());
         r.Read(Magic, 2);
         R_ASSERT(Magic[0] == 2 && Magic[1] == 1);
         Name = r.ReadString255();
         InitialName = r.ReadString255();
         InitialPath = r.ReadString255();
-        Type = static_cast<LayerType>(r.ReadU32());
+        Type = LayerType(r.ReadU32());
         PadColor = r.ReadU32();
         LineColor = r.ReadU32();
         printf("- loading object name[%s] type[%s] addr[0x%08X]\n",
@@ -809,7 +809,7 @@ namespace Tebo
         Pos = r.ReadVec2S();
         Angle = r.ReadS32();
         Decal = r.ReadU32();
-        Type = static_cast<PartType>(r.ReadU32());
+        Type = PartType(r.ReadU32());
         Z1 = r.ReadU32();
         R_ASSERT(Z1 == 0);
         Height = r.ReadS32();
@@ -1041,14 +1041,13 @@ namespace Tebo
         cbf.Layers.reserve(Layers.size() + 1);
         for (auto const &layer : Layers)
         {
-            auto const obj = layer.get();
-            switch (obj->ObjType)
+            switch (layer->ObjType)
             {
             case ObjectType::Through:
-                ExportLayer(cbf, dynamic_cast<ThroughLayer const *>(obj));
+                ExportLayer(cbf, dynamic_cast<ThroughLayer const *>(layer.get()));
                 break;
             case ObjectType::Logic:
-                ExportLayer(cbf, dynamic_cast<LogicLayer const *>(obj));
+                ExportLayer(cbf, dynamic_cast<LogicLayer const *>(layer.get()));
                 break;
             default:
                 R_ASSERT(!"Unrecognized object type");
