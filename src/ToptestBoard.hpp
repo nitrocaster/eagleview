@@ -116,16 +116,14 @@ namespace Toptest
             {}
             virtual char const *Tag() const override { return "toptest"; }
             virtual char const *Desc() const override { return "Toptest board view (*.BRD)"; }
-            virtual bool CanExport() const override { return true; }            
+            virtual bool CanWrite() const override { return true; }
         };
 
-        virtual void Export(CBF::Board const &cbf, std::ostream &fs) override;
+        virtual void Import(CBF::Board const &cbf) override;
+        virtual void Write(std::ostream &fs) const override;
         virtual BoardFormatRep const &Frep() const override;
 
     private:
-        void Import(CBF::Board const &cbf);
-        void Save(std::ostream &fs);
-
         void BuildOutline(CBF::Board const &src);
         void ProcessLogicLayers(CBF::Board const &src);
     };

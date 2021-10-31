@@ -75,9 +75,6 @@ namespace Eagle
             std::string Name;
             using PadName = std::string;
             std::map<PadName, PadInfo, PadComparer> Pads;
-            // converter helpers
-            uint32_t Decal = uint32_t(-1); // index of Decal in Board::Decals
-            Box2d Bbox;
         };
 
         struct LibraryInfo
@@ -149,15 +146,14 @@ namespace Eagle
             {}
             virtual char const *Tag() const override { return "eagle"; }
             virtual char const *Desc() const override { return "Autodesk EAGLE board (*.BRD)"; }
-            virtual bool CanImport() const override { return true; }            
+            virtual bool CanRead() const override { return true; }
         };
 
-        virtual void Import(CBF::Board &cbf, std::istream &fs) override;        
+        virtual void Read(std::istream &fs) override;
+        virtual void Export(CBF::Board &cbf) const override;
         virtual BoardFormatRep const &Frep() const override;
 
     private:
         void ProcessSection(SectionInfo &&s);
-        void Load(std::istream &fs);
-        void Export(CBF::Board &cbf);
     };
 } // namespace Eagle

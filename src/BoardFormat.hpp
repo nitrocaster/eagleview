@@ -35,8 +35,8 @@ public:
     virtual ~BoardFormatRep() = default;
     virtual char const *Tag() const { return ""; }
     virtual char const *Desc() const { return ""; }
-    virtual bool CanImport() const { return false; }
-    virtual bool CanExport() const { return false; }
+    virtual bool CanRead() const { return false; }
+    virtual bool CanWrite() const { return false; }
     FactoryFunc Factory() const { return factory; }
 };
 
@@ -44,8 +44,10 @@ class BoardFormat
 {
 public:
     virtual ~BoardFormat() = default;    
-    virtual void Import(CBF::Board &board, std::istream &fs) { R_ASSERT(!"Not supported"); }
-    virtual void Export(CBF::Board const &board, std::ostream &fs) { R_ASSERT(!"Not supported"); }
+    virtual void Read(std::istream &) { R_ASSERT(!"Not supported"); }
+    virtual void Export(CBF::Board &) const { R_ASSERT(!"Not supported"); }
+    virtual void Import(CBF::Board const &) { R_ASSERT(!"Not supported"); }
+    virtual void Write(std::ostream &) const { R_ASSERT(!"Not supported"); }
     virtual BoardFormatRep const &Frep() const = 0;
     
 private:

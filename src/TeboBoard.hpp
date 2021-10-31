@@ -641,16 +641,15 @@ namespace Tebo
             {}
             virtual char const *Tag() const override { return "tebo"; }
             virtual char const *Desc() const override { return "Tebo-ICT view (*.TVW)"; }
-            virtual bool CanImport() const override { return true; }
+            virtual bool CanRead() const override { return true; }
         };
 
-        virtual void Import(CBF::Board &cbf, std::istream &fs) override;
+        virtual void Read(std::istream &fs) override;
+        virtual void Export(CBF::Board &cbf) const override;
         virtual BoardFormatRep const &Frep() const override;
 
     private:
-        void Load(std::istream &fs);
-        void Export(CBF::Board &cbf);
-        void ExportLayer(CBF::Board &cbf, ThroughLayer const *layer);
-        void ExportLayer(CBF::Board &cbf, LogicLayer const *layer);
+        void ExportLayer(CBF::Board &cbf, ThroughLayer const *layer) const;
+        void ExportLayer(CBF::Board &cbf, LogicLayer const *layer) const;
     };
 } // namespace Tebo

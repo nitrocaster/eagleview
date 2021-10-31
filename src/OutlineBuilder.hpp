@@ -80,19 +80,19 @@ private:
         if (!index.Valid())
         {
             index = vertices.size();
-            VertexData data(v, index);
+            VertexData const data(v, index);
             vertices.push_back(data);
         }
         return index;
     }
 
-    std::string VectorToString(Vector2d v)
+    static std::string VectorToString(Vector2d v)
     { return std::to_string(v.X) + ", " + std::to_string(v.Y); }
 
     Index NextVertex(VertexData const &current, Index prev)
     {
-        auto pred = [&](Index next) { return next.Valid() && next != prev; };
-        auto next = std::find_if(begin(current.Neighbors), end(current.Neighbors), pred);
+        auto const pred = [&](Index next) { return next.Valid() && next != prev; };
+        auto const next = std::find_if(begin(current.Neighbors), end(current.Neighbors), pred);
         if (next == current.Neighbors.end())
             return Index::InvalidValue;
         else
@@ -161,8 +161,8 @@ private:
 public:
     void AddEdge(Edge2d edge)
     {
-        Index ia = FindVertex(edge.A);
-        Index ib = FindVertex(edge.B);
+        Index const ia = FindVertex(edge.A);
+        Index const ib = FindVertex(edge.B);
         if (ia == ib) // skip degenerate edges
             return;
         VertexData &a = vertices[ia];
@@ -192,7 +192,7 @@ public:
         Box2d maxLoopBBox(vertices.front().V, 0);
         for (Loop const &loop : loops)
         {
-            Box2d bb = CalculateBBox(loop);
+            Box2d const bb = CalculateBBox(loop);
             if (bb.Contains(maxLoopBBox))
             {
                 maxLoopBBox = bb;

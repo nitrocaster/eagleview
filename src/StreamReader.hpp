@@ -34,7 +34,7 @@ namespace Tebo
 
         bool ReadBool8()
         {
-            uint8_t v = ReadU8();
+            uint8_t const v = ReadU8();
             R_ASSERT(v <= 1);
             return v;
         }
@@ -42,7 +42,7 @@ namespace Tebo
         template <typename T>
         void Read(T *dst, size_t count)
         {
-            std::streamsize itemSize = sizeof(T);
+            std::streamsize const itemSize = sizeof(T);
             is.read((char *)dst, itemSize*count);
             rPos = Tell();
         }
@@ -80,7 +80,7 @@ namespace Tebo
 
         std::string ReadString255()
         {
-            uint8_t size = ReadU8();
+            uint8_t const size = ReadU8();
             std::string s;
             s.resize(size);
             Read(s.data(), size);

@@ -22,12 +22,12 @@ private:
     {
         if (s <= -2*Pi)
         {
-            auto k = std::round(-s/(2*Pi));
+            auto const k = std::round(-s/(2*Pi));
             s += Scalar(k*2*Pi);
         }
         else if (s >= 2*Pi)
         {
-            auto k = std::round(s/(2*Pi));
+            auto const k = std::round(s/(2*Pi));
             s -= Scalar(k*2*Pi);
         }
         return s;

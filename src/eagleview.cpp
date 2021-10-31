@@ -17,9 +17,9 @@ static void PrintUsage()
     {
         auto const &frep = n->Frep;
         std::string caps;
-        if (frep.CanImport())
+        if (frep.CanRead())
             caps += 'r';
-        if (frep.CanExport())
+        if (frep.CanWrite())
             caps += 'w';
         if (caps.empty())
             caps += "-";
@@ -46,9 +46,9 @@ int main(int argc, char const *argv[])
         puts("! Unrecognized input format");
         return 1;
     }
-    if (!src->Frep().CanImport())
+    if (!src->Frep().CanRead())
     {
-        puts("! Import is not supported for the input format");
+        puts("! The input format is not readable");
         return 1;
     }
     auto dst = BoardFormat::Create(dstFormat+1);
@@ -57,9 +57,9 @@ int main(int argc, char const *argv[])
         puts("! Unrecognized output format");
         return 1;
     }
-    if (!dst->Frep().CanExport())
+    if (!dst->Frep().CanWrite())
     {
-        puts("! Export is not supported for the output format");
+        puts("! The output format is not writeable");
         return 1;
     }
     CBF::Board brd;
@@ -70,7 +70,8 @@ int main(int argc, char const *argv[])
             printf("! Can't read '%s'\n", srcPath);
             return 1;
         }
-        src->Import(brd, fs);
+        src->Read(fs);
+        src->Export(brd);
     }
     {
         auto fs = std::ofstream(dstPath, std::ios::binary);
@@ -79,7 +80,8 @@ int main(int argc, char const *argv[])
             printf("! Can't write '%s'\n", dstPath);
             return 1;
         }
-        dst->Export(brd, fs);
+        dst->Import(brd);
+        dst->Write(fs);
     }
     return 0;
 }

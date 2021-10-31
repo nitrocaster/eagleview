@@ -168,7 +168,7 @@ namespace CBF
     class Pad
     {
     public:
-        uint32_t Net;
+        uint32_t Net = uint32_t(~0);
         // XXX: support dual shapes (top/bottom)
         uint32_t Shape;
         Vector2 Pos; // global pos

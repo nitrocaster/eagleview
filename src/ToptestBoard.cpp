@@ -181,8 +181,8 @@ namespace Toptest
 
     void Board::BuildOutline(CBF::Board const &src)
     {
-        auto index = FindLayerObject(src, CBF::LayerType::Route);
-        auto profile = GetThroughLayer(src, index);
+        auto const index = FindLayerObject(src, CBF::LayerType::Route);
+        auto const profile = GetThroughLayer(src, index);
         if (!profile)
             return;
         OutlineBuilder outlineBuilder;
@@ -209,19 +209,19 @@ namespace Toptest
     void Board::ProcessLogicLayers(CBF::Board const &src)
     {
         // XXX: support single-sided boards?
-        auto multiIndex = FindLayerObject(src, CBF::LayerType::Multilayer);
-        auto multi = GetLogicLayer(src, multiIndex);
+        auto const multiIndex = FindLayerObject(src, CBF::LayerType::Multilayer);
+        auto const multi = GetLogicLayer(src, multiIndex);
         if (!multi)
             return;
-        auto topIndex = FindLayerObject(src, CBF::LayerType::Top);
-        auto top = GetLogicLayer(src, topIndex);
+        auto const topIndex = FindLayerObject(src, CBF::LayerType::Top);
+        auto const top = GetLogicLayer(src, topIndex);
         if (!top)
             return;
-        auto bottomIndex = FindLayerObject(src, CBF::LayerType::Bottom);
-        auto bottom = GetLogicLayer(src, bottomIndex);
+        auto const bottomIndex = FindLayerObject(src, CBF::LayerType::Bottom);
+        auto const bottom = GetLogicLayer(src, bottomIndex);
         if (!bottom)
             return;
-        auto getLayerByIndex = [&](uint32_t i) -> CBF::LogicLayer const *
+        auto const getLayerByIndex = [&](uint32_t i) -> CBF::LogicLayer const *
         {
             if (i == multiIndex)
                 return multi;
@@ -242,7 +242,7 @@ namespace Toptest
             dstPart->Layer(GetLayerCode(src, part.Layer));
             dstPart->FirstPin(pins.size());
             dstPart->PinCount(part.Pins.size());
-            auto verts = {
+            auto const verts = {
                 part.Bbox.Min,
                 {part.Bbox.Min.X, part.Bbox.Max.Y},
                 part.Bbox.Max,
@@ -259,7 +259,7 @@ namespace Toptest
                 auto dstPin = std::make_unique<Pin>();
                 dstPin->Name(pin.Name);
                 dstPin->Layer(GetLayerCode(src, pin.Layer));
-                auto srcLayer = getLayerByIndex(pin.Layer);
+                auto const srcLayer = getLayerByIndex(pin.Layer);
                 R_ASSERT(srcLayer && "Only multilayer, top and bottom layers are allowed for pins");
                 R_ASSERT(pin.Pad < srcLayer->Pads.size());
                 auto const &pad = srcLayer->Pads[pin.Pad];
@@ -279,7 +279,7 @@ namespace Toptest
         ProcessLogicLayers(cbf);
     }
 
-    void Board::Save(std::ostream &fs)
+    void Board::Write(std::ostream &fs) const
     {
         auto const rn = '\n';
         auto outlineBox = Box2i::Empty;
@@ -291,10 +291,10 @@ namespace Toptest
         // vertex1
         // vertex2
         // ...
-        int64_t magic = 163LL*(outline[0].X + outline[0].Y);
-        magic += 80LL*(outline.size()+1LL);
-        magic += 79LL*outlineBox.Height();
-        magic += 84LL*outlineBox.Width();
+        int64_t const magic = 163LL*(outline[0].X + outline[0].Y)
+            + 80LL*(outline.size()+1LL)
+            + 79LL*outlineBox.Height()
+            + 84LL*outlineBox.Width();
         w.Write(magic, rn);
         w.Write("BRDOUT: ", outline.size() + 1, " ", outlineBox.Max, rn);
         for (size_t i = 0; i < outline.size() + 1; i++)
@@ -323,12 +323,6 @@ namespace Toptest
         w.Write("NAILS: ", testPoints.size(), rn);
         for (auto const &nail : testPoints)
             w.Write(nail.get(), rn);
-    }
-
-    void Board::Export(CBF::Board const &cbf, std::ostream &fs)
-    {
-        Import(cbf);
-        Save(fs);
     }
 
     static Board::Rep const Frep;

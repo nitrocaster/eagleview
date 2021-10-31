@@ -51,7 +51,7 @@ namespace Eagle
                     break;
                 case 'R':
                     errno = 0;
-                    double degrees = std::strtod(rotStr.data()+i+1, nullptr);
+                    double const degrees = std::strtod(rotStr.data()+i+1, nullptr);
                     if (errno)
                         throw std::runtime_error("Can't parse 'rot' attribute: invalid angle");
                     info.Rot = Angle::FromDegrees(degrees);
@@ -134,41 +134,35 @@ namespace Eagle
     template <typename TInserter>
     static void CreatePolyArc(Edge2d edge, double curve, TInserter insert)
     {
-        double dist = edge.Length();
+        double const dist = edge.Length();
         if (dist <= PolyArcTheshold)
         {
             insert(edge);
             return;
         }
-        int sign = Sign(curve);
+        int const sign = Sign(curve);
         curve = std::abs(Angle::FromDegrees(curve).Radians());
-        Vector2d vec = edge.B - edge.A;
-        double h = dist / (2*std::tan(curve/2));
+        Vector2d const vec = edge.B - edge.A;
+        double const h = dist / (2*std::tan(curve/2));
         auto turn = Matrix23::Rotation(Angle::FromDegrees(sign*90.0));
-        Vector2d hvec = (turn * vec.Normalize())*h;
-        Vector2d center = edge.A + vec/2 + hvec;
-        Vector2d rvec = edge.A - center;
-        double r = rvec.Length();
-        double maxSector = 2*std::asin(PolyArcTheshold/(2*r));
-        int sectorCount = int(std::ceil(curve / maxSector));
-        double sectorAngle = curve / sectorCount;
+        Vector2d const hvec = (turn * vec.Normalize())*h;
+        Vector2d const center = edge.A + vec/2 + hvec;
+        Vector2d const rvec = edge.A - center;
+        double const r = rvec.Length();
+        double const maxSector = 2*std::asin(PolyArcTheshold/(2*r));
+        int const sectorCount = int(std::ceil(curve / maxSector));
+        double const sectorAngle = curve / sectorCount;
         Vector2d prevVertex = edge.A;
         if (sectorCount < 2)
             throw std::runtime_error("Beer from nitrocaster");
         for (int i = 0; i < sectorCount-1; i++)
         {
             turn = Matrix23d::Rotation(Angle::FromRadians(sign*(i+1)*sectorAngle));
-            Vector2d v = center + turn*rvec;
+            Vector2d const v = center + turn*rvec;
             insert({prevVertex, v});
             prevVertex = v;
         }
         insert({prevVertex, edge.B});
-    }
-    
-    void Board::Import(CBF::Board &cbf, std::istream &fs)
-    {
-        Load(fs);
-        Export(cbf);
     }
 
     void Board::ProcessSection(SectionInfo &&s)
@@ -181,7 +175,7 @@ namespace Eagle
         }
     }
 
-    void Board::Load(std::istream &fs)
+    void Board::Read(std::istream &fs)
     {
         {
             fs.seekg(0, std::ios::end);
@@ -254,7 +248,7 @@ namespace Eagle
             for (auto cref = signal.Begin("contactref"); cref; cref.Next("contactref"))
             {
                 crefCount++;
-                auto crefInfo = ExtractContactRef(cref);
+                auto const crefInfo = ExtractContactRef(cref);
                 partSignals[crefInfo.Element][crefInfo.Pad] = signalIndex;
             }
         }
@@ -262,7 +256,7 @@ namespace Eagle
 
     static Board::LayerId operator++(Board::LayerId &id, int)
     {
-        auto r = id;
+        auto const r = id;
         id = Board::LayerId(int32_t(id) + 1);
         return r;
     }
@@ -313,7 +307,7 @@ namespace Eagle
     
     static uint32_t FindLayer(CBF::Board &cbf, CBF::LayerType role)
     {
-        auto pred = [&](auto const &p) { return p->Type==role; };
+        auto const pred = [&](auto const &p) { return p->Type==role; };
         auto const &it = std::find_if(cbf.Layers.begin(), cbf.Layers.end(), pred);
         R_ASSERT(it!=cbf.Layers.end());
         return uint32_t(std::distance(cbf.Layers.begin(), it));
@@ -321,14 +315,37 @@ namespace Eagle
 
     static void AddDummyShape(CBF::Board &cbf, uint32_t layerIndex)
     {
-        CBF::LogicLayer *layer = *cbf.Layers[layerIndex].get();
+        CBF::LogicLayer *const layer = *cbf.Layers[layerIndex];
         R_ASSERT(layer != nullptr);
-        auto shape = new CBF::Round(1);
+        auto const shape = new CBF::Round(1);
         shape->Name = "dummy_1mil";
         layer->Shapes.push_back(std::unique_ptr<CBF::Shape>(shape));
     }
 
-    void Board::Export(CBF::Board &cbf)
+    struct PkgInfo
+    {
+        Box2d Bbox;
+        uint32_t Decal; // index of Decal in Board::Decals
+    };
+
+    struct FullPkgName
+    {
+        std::string_view Lib;
+        std::string_view Pkg;
+
+        bool operator==(FullPkgName const& v) const { return v.Lib==Lib && v.Pkg==Pkg; }
+
+        struct Hash
+        {
+            size_t operator()(FullPkgName const& v) const
+            {
+                std::hash<std::string_view> const hash;
+                return hash(v.Lib) * hash(v.Pkg);
+            }
+        };
+    };
+
+    void Board::Export(CBF::Board &cbf) const
     {
         // *** nets
         cbf.Nets.reserve(signals.size());
@@ -339,8 +356,8 @@ namespace Eagle
         // + 1 (dimension)
         cbf.Layers.reserve(int(LayerId::Bottom) - int(LayerId::Multilayer) + 2);
         {
-            auto id = LayerId::Multilayer;
-            auto layer = new CBF::LogicLayer();
+            auto const id = LayerId::Multilayer;
+            auto const layer = new CBF::LogicLayer();
             layer->Type = GetLayerRoleById(id);
             layer->LineColor = 0xc0c0c0;
             layer->PadColor = 0xc0c0c0;
@@ -352,7 +369,7 @@ namespace Eagle
             if (it == layers.end())
                 continue;
             LayerInfo const &info = it->second;
-            auto layer = new CBF::LogicLayer();
+            auto const layer = new CBF::LogicLayer();
             layer->Name = info.Name;
             layer->Type = GetLayerRoleById(id);
             layer->LineColor = GetColorByIndex(info.Color);
@@ -362,7 +379,7 @@ namespace Eagle
         if (auto const it = layers.find(LayerId::Dimension); it != layers.end())
         {
             LayerInfo const &info = it->second;
-            auto layer = new CBF::DrillLayer();
+            auto const layer = new CBF::DrillLayer();
             layer->Name = info.Name;
             layer->Type = GetLayerRoleById(LayerId::Dimension);
             layer->LineColor = GetColorByIndex(info.Color);
@@ -380,13 +397,15 @@ namespace Eagle
             cbf.Layers.push_back(std::unique_ptr<CBF::Layer>(layer));
         }
         // *** decals
-        for (auto &[libName, lib] : libs)
+        std::unordered_map<FullPkgName, PkgInfo, FullPkgName::Hash> tempPkgInfos;
+        for (auto const &[libName, lib] : libs)
         {
-            for (auto &[pkgName, pkg] : lib.Packages)
+            for (auto const &[pkgName, pkg] : lib.Packages)
             {
                 auto bbox = Box2d::Empty;
                 for (auto const &[padName, pad] : pkg.Pads)
                     bbox.Merge(Box2d(pad.Size) + pad.Pos);
+                tempPkgInfos[{libName, pkgName}] = PkgInfo{bbox, uint32_t(cbf.Decals.size())};
                 CBF::Decal decal;
                 decal.Name = pkgName;
                 decal.Outline.reserve(4);
@@ -394,8 +413,6 @@ namespace Eagle
                 decal.Outline.push_back(bbox.Min+bbox.Height());
                 decal.Outline.push_back(bbox.Max);
                 decal.Outline.push_back(bbox.Max-bbox.Height());
-                pkg.Bbox = bbox;
-                pkg.Decal = uint32_t(cbf.Decals.size());
                 cbf.Decals.push_back(std::move(decal));
             }
         }
@@ -424,14 +441,15 @@ namespace Eagle
         AddDummyShape(cbf, bottomLayer);
         for (auto const &part : partInfos)
         {
-            auto const &pkg = libs[part.Library].Packages[part.Package];
+            auto const &pkg = libs.at(part.Library).Packages.at(part.Package);
+            auto const &tempPkgInfo = tempPkgInfos.at({part.Library, part.Package});
             CBF::Part cbfPart;
             {
                 cbfPart.Name = part.Name;
-                cbfPart.Bbox = pkg.Bbox;
+                cbfPart.Bbox = tempPkgInfo.Bbox;
                 cbfPart.Pos = part.Pos;
                 cbfPart.Turn = part.Rot; // top:ccw
-                cbfPart.Decal = pkg.Decal;
+                cbfPart.Decal = tempPkgInfo.Decal;
                 cbfPart.Height = 0;
                 cbfPart.Value = part.Value;
                 cbfPart.Desc = part.Package;
@@ -450,12 +468,16 @@ namespace Eagle
             for (auto const &[padName, pad] : pkg.Pads)
             {
                 CBF::Pin cbfPin;
-                uint32_t layerIndex = translateLayer(pad.Layer, part.Mirror);
+                uint32_t const layerIndex = translateLayer(pad.Layer, part.Mirror);
                 cbfPin.Layer = layerIndex;
-                CBF::LogicLayer *layer = *cbf.Layers[layerIndex].get();
+                CBF::LogicLayer *const layer = *cbf.Layers[layerIndex];
                 CBF::Pad cbfPad;
                 {
-                    cbfPad.Net = partSignals[part.Name][padName];
+                    auto const &padNets = partSignals.at(part.Name);
+                    if (const auto padNet = padNets.find(padName); padNet != padNets.end())
+                    {
+                        cbfPad.Net = padNet->second;
+                    }
                     cbfPad.Shape = 0; // XXX: support shapes
                     cbfPad.Pos = transform * pad.Pos;
                     cbfPad.Turn = Angle::FromDegrees(0); // XXX: support pad rotation

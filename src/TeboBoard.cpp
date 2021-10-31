@@ -13,39 +13,39 @@ namespace Tebo
             uint32_t one = r.ReadU32();
             R_ASSERT(one == 1);
         }
-        auto size = r.ReadVec2S();
-        auto type = static_cast<ShapeType>(r.ReadU32());
+        auto const size = r.ReadVec2S();
+        auto const type = static_cast<ShapeType>(r.ReadU32());
         switch (type)
         {
         case ShapeType::Round:
         {
-            auto skip = r.ReadVec2S();
+            auto const skip = r.ReadVec2S();
             return std::make_unique<Round>(size);
         }
         case ShapeType::Rect:
         {
-            auto turn = r.ReadFloat();
-            auto skip = r.ReadS32();
+            auto const turn = r.ReadFloat();
+            auto const skip = r.ReadS32();
             return std::make_unique<Rect>(size, turn);
         }
         case ShapeType::Poly:
         {
-            auto skip = r.ReadU32();
-            auto name = r.ReadString255();
+            auto const skip = r.ReadU32();
+            auto const name = r.ReadString255();
             auto shape = std::make_unique<Poly>(size, name);
             shape->BBox.Min = r.ReadVec2S();
             shape->BBox.Max = r.ReadVec2S();
             auto subObjCount = r.ReadU32();
             for (uint32_t i = 0; i < subObjCount; i++)
             {
-                auto subObjType = r.ReadU32();
+                auto const subObjType = r.ReadU32();
                 switch (subObjType)
                 {
                 case 2: // poly
                 {
                     R_ASSERT(shape->Vertices.empty());
                     r.Read(shape->Flags, 3);
-                    uint32_t vertexCount = r.ReadU32();
+                    uint32_t const vertexCount = r.ReadU32();
                     shape->Vertices.reserve(vertexCount);
                     for (uint32_t i = 0; i < vertexCount; i++)
                         shape->Vertices.push_back(r.ReadVec2S());
@@ -65,8 +65,8 @@ namespace Tebo
         }
         case ShapeType::RoundRect:
         {
-            auto turn = r.ReadFloat();
-            auto cornerRadius = r.ReadS32();
+            auto const turn = r.ReadFloat();
+            auto const cornerRadius = r.ReadS32();
             return std::make_unique<RoundRect>(size, cornerRadius, turn);
         }
         default:
@@ -152,7 +152,7 @@ namespace Tebo
         uint32_t const maxSkips = 4;
         for (uint32_t i = 0; i < maxSkips; i++)
         {
-            uint32_t type = r.ReadU32();
+            uint32_t const type = r.ReadU32();
             if (!type)
                 continue;
             return static_cast<ObjectType>(type);
@@ -185,7 +185,7 @@ namespace Tebo
     {
         // 3, 2, 1 # logic layer
         // 1, 2, 1 # thru layer (from 0 to 0)
-        uint32_t pos = static_cast<uint32_t>(r.Tell());
+        uint32_t const pos = static_cast<uint32_t>(r.Tell());
         r.Read(Magic, 2);
         R_ASSERT(Magic[0] == 2 && Magic[1] == 1);
         Name = r.ReadString255();
@@ -273,11 +273,11 @@ namespace Tebo
 
     void LogicLayer::LoadPads(StreamReader &r)
     {
-        uint32_t instanceCount = r.ReadU32();
+        uint32_t const instanceCount = r.ReadU32();
         if (!instanceCount)
             return;
         {
-            uint32_t two = r.ReadU32();
+            uint32_t const two = r.ReadU32();
             R_ASSERT(two == 2);
         }
         Pads.reserve(instanceCount);
@@ -322,11 +322,11 @@ namespace Tebo
 
     void LogicLayer::LoadLines(StreamReader &r)
     {
-        uint32_t instanceCount = r.ReadU32();
+        uint32_t const instanceCount = r.ReadU32();
         if (!instanceCount)
             return;
         {
-            uint32_t zero = r.ReadU32();
+            uint32_t const zero = r.ReadU32();
             R_ASSERT(!zero);
         }
         Lines.reserve(instanceCount);
@@ -344,7 +344,7 @@ namespace Tebo
 
     void LogicLayer::LoadArcs(StreamReader &r)
     {
-        uint32_t instanceCount = r.ReadU32();
+        uint32_t const instanceCount = r.ReadU32();
         if (!instanceCount)
             return;
         {
@@ -368,7 +368,7 @@ namespace Tebo
 
     void LogicLayer::LoadSurfaces(StreamReader &r)
     {
-        uint32_t instanceCount = r.ReadU32();
+        uint32_t const instanceCount = r.ReadU32();
         if (!instanceCount)
             return;
         {
@@ -415,10 +415,10 @@ namespace Tebo
             UnknownItems.reserve(UnknownItemCount);
             for (uint32_t i = 0; i < UnknownItemCount; i++)
                 UnknownItems.emplace_back().Load(r);
-            uint32_t skip = r.ReadU32();
+            uint32_t const skip = r.ReadU32();
             R_ASSERT(skip == 0);
         }
-        uint32_t skip = r.ReadU32();
+        uint32_t const skip = r.ReadU32();
         R_ASSERT(skip == 7);
     }
 
@@ -483,7 +483,7 @@ namespace Tebo
         {
             bool extraData = false;
             {
-                auto skip1 = r.ReadU32();
+                auto const skip1 = r.ReadU32();
                 // NOTE: this might be incorrect way to determine data order
                 // (maybe it has to be bound to layer type?)
                 switch (skip1)
@@ -497,9 +497,9 @@ namespace Tebo
                     extraData = true;
                     break;
                 }
-                auto skip2 = r.ReadU32();
+                auto const skip2 = r.ReadU32();
                 R_ASSERT(skip2 == 0);
-                auto skip3 = r.ReadU32();
+                auto const skip3 = r.ReadU32();
                 R_ASSERT(skip3 == 1);
             }
             LoadPads(r);
@@ -515,7 +515,7 @@ namespace Tebo
                 // reload lines and arcs
                 LoadLines(r);
                 LoadArcs(r);
-                uint32_t skip4 = r.ReadU32();
+                uint32_t const skip4 = r.ReadU32();
                 R_ASSERT(skip4 == 0);
             }
         }
@@ -563,7 +563,7 @@ namespace Tebo
             Tools.emplace_back().Load(r);
         zero = r.ReadU8();
         R_ASSERT(zero == 0);
-        auto drillCount = r.ReadU32();
+        auto const drillCount = r.ReadU32();
         {
             auto v2 = r.ReadU32();
             printf("- drill holes[%u], v2[%u]\n", drillCount, v2);
@@ -575,8 +575,6 @@ namespace Tebo
             R_ASSERT(dummy[2] == 0);
             R_ASSERT(dummy[3] == 0);
         }
-        // 08 : drill hole
-        // 0A : drill slot
         DrillHoles.reserve(drillCount);
         // XXX: drill slot count must be stored somewhere
         DrillSlots.reserve(100);
@@ -600,7 +598,7 @@ namespace Tebo
     static std::unique_ptr<Object> LoadObject(StreamReader &r)
     {
         Object *object = nullptr;
-        ObjectType type = Object::Detect(r);
+        ObjectType const type = Object::Detect(r);
         switch (type)
         {
         case ObjectType::Logic:
@@ -660,12 +658,12 @@ namespace Tebo
         P1 = r.ReadU32();
         r.Read(PX, 6);
         r.Read(Flags, 3);
-        uint32_t itemCount = r.ReadU32();
+        uint32_t const itemCount = r.ReadU32();
         R_ASSERT(itemCount > 0);
         Items.reserve(itemCount);
         for (uint32_t i = 0; i < itemCount; i++)
             Items.emplace_back().Load(r);
-        uint32_t boxCount = r.ReadU32();
+        uint32_t const boxCount = r.ReadU32();
         C1 = r.ReadU32();
         V1 = r.ReadVec2S();
         V2 = r.ReadVec2S();
@@ -679,7 +677,7 @@ namespace Tebo
         Fixture.Load(r);
         V3 = r.ReadVec2S();
         V4 = r.ReadVec2S();
-        uint32_t box2Count = r.ReadU32();
+        uint32_t const box2Count = r.ReadU32();
         Boxes2.reserve(box2Count);
         for (uint32_t i = 0; i < box2Count; i++)
             Boxes2.emplace_back().Load(r);
@@ -705,7 +703,7 @@ namespace Tebo
         Header.V3 = r.ReadU32();
         Header.K4 = r.ReadU32();
         Header.V4 = r.ReadU32();
-        bool hasBody = r.ReadBool8();
+        bool const hasBody = r.ReadBool8();
         if (hasBody)
         {
             ProbeData body;
@@ -739,13 +737,13 @@ namespace Tebo
         R_ASSERT(Param == 4);
         Name = r.ReadString255();
         DefaultSize = r.ReadU32();
-        uint32_t packCount = r.ReadU32();
+        uint32_t const packCount = r.ReadU32();
         R_ASSERT(packCount > 0);
         Packs.reserve(packCount);
         for (uint32_t ip = 0; ip < packCount; ip++)
         {
             ProbePack pack;
-            uint32_t probeCount = r.ReadU32();
+            uint32_t const probeCount = r.ReadU32();
             for (uint32_t i = 0; i < probeCount; i++)
             {
                 Probe p;
@@ -772,7 +770,7 @@ namespace Tebo
         Name = r.ReadString255();
         Param = r.ReadU32();
         R_ASSERT(Param == 0);
-        uint32_t variantCount = r.ReadU32();
+        uint32_t const variantCount = r.ReadU32();
         Variants.reserve(variantCount);
         for (uint32_t i = 0; i < variantCount; i++)
             Variants.emplace_back().Load(r);
@@ -826,7 +824,7 @@ namespace Tebo
             Z2 = r.ReadU32();
             R_ASSERT(Z2 == 0);
         }
-        auto pinCount = r.ReadU32();
+        auto const pinCount = r.ReadU32();
         Layer = r.ReadU32();
         P2 = r.ReadU32();
         R_ASSERT(P2 == 0);
@@ -865,7 +863,7 @@ namespace Tebo
         Flag = r.ReadBool8();
         for (uint32_t i = 0; i < Layers.size(); i++)
         {
-            bool present = r.ReadBool8();
+            bool const present = r.ReadBool8();
             if (!present)
                 continue;
             Layers[i] = LoadObject(r);
@@ -878,7 +876,7 @@ namespace Tebo
         Outline.reserve(OutlineVertexCount);
         for (uint32_t i = 0; i < OutlineVertexCount; i++)
         {
-            Vector2S v = r.ReadVec2S();
+            Vector2S const v = r.ReadVec2S();
             Outline.push_back(v);
         }
         r.Read(Params, 2);
@@ -886,8 +884,8 @@ namespace Tebo
 
     void Board::ReadNetList(StreamReader &r)
     {
-        uint32_t netCount = r.ReadU32();
-        uint32_t nc2 = r.ReadU32();
+        uint32_t const netCount = r.ReadU32();
+        uint32_t const nc2 = r.ReadU32();
         R_ASSERT(netCount > 0 && netCount == nc2);
         printf("- loading %u nets\n", netCount);
         Nets.reserve(netCount);
@@ -897,8 +895,8 @@ namespace Tebo
 
     void Board::ReadParts(StreamReader &r)
     {
-        uint32_t partCount = r.ReadU32();
-        uint32_t skip = r.ReadU32();
+        uint32_t const partCount = r.ReadU32();
+        uint32_t const skip = r.ReadU32();
         printf("- loading %u parts\n", partCount);
         Parts.reserve(partCount);
         for (uint32_t i = 0; i < partCount; i++)
@@ -907,7 +905,7 @@ namespace Tebo
 
     void Board::ReadDecals(StreamReader &r)
     {
-        uint32_t c = r.ReadU32();
+        uint32_t const c = r.ReadU32();
         R_ASSERT(c == 3);
         uint32_t decalCount = r.ReadU32();
         printf("- loading %u decals\n", decalCount);
@@ -916,7 +914,7 @@ namespace Tebo
             Decals.emplace_back().Load(r);
     }
 
-    void Board::Load(std::istream &fs)
+    void Board::Read(std::istream &fs)
     {
         StreamReader r(fs);
         Header.Load(r);
@@ -967,10 +965,10 @@ namespace Tebo
         }
     }
 
-    void Board::ExportLayer(CBF::Board &cbf, ThroughLayer const *layer)
+    void Board::ExportLayer(CBF::Board &cbf, ThroughLayer const *layer) const
     {
         R_ASSERT(layer!=nullptr);
-        auto cbfLayer = new CBF::DrillLayer();
+        auto const cbfLayer = new CBF::DrillLayer();
         cbfLayer->Name = layer->Name;
         cbfLayer->Type = GetCbfType(layer->Type);
         cbfLayer->PadColor = layer->PadColor;
@@ -997,17 +995,17 @@ namespace Tebo
         cbf.Layers.push_back(std::unique_ptr<CBF::Layer>(cbfLayer));
     }
 
-    void Board::ExportLayer(CBF::Board &cbf, LogicLayer const *layer)
+    void Board::ExportLayer(CBF::Board &cbf, LogicLayer const *layer) const
     {
         R_ASSERT(layer!=nullptr);
-        auto cbfLayer = new CBF::LogicLayer();
+        auto const cbfLayer = new CBF::LogicLayer();
         cbfLayer->Name = layer->Name;
         cbfLayer->Type = GetCbfType(layer->Type);
         cbfLayer->PadColor = layer->PadColor;
         cbfLayer->LineColor = layer->LineColor;
         cbfLayer->Shapes.reserve(layer->Shapes.size());
         { // XXX: support shapes
-            auto cbfShape = new CBF::Round(8);
+            auto const cbfShape = new CBF::Round(8);
             cbfLayer->Shapes.push_back(std::unique_ptr<CBF::Shape>(cbfShape));
         }
         cbfLayer->Pads.reserve(layer->Pads.size());
@@ -1025,7 +1023,7 @@ namespace Tebo
         cbf.Layers.push_back(std::unique_ptr<CBF::Layer>(cbfLayer));
     }
 
-    void Board::Export(CBF::Board &cbf)
+    void Board::Export(CBF::Board &cbf) const
     {
         /* Tebo::Board
             TvwHeader Header;
@@ -1043,7 +1041,7 @@ namespace Tebo
         cbf.Layers.reserve(Layers.size() + 1);
         for (auto const &layer : Layers)
         {
-            Object const *obj = layer.get();
+            auto const obj = layer.get();
             switch (obj->ObjType)
             {
             case ObjectType::Through:
@@ -1059,7 +1057,7 @@ namespace Tebo
         }
         // add multilayer layer
         {
-            auto cbfLayer = new CBF::LogicLayer();
+            auto const cbfLayer = new CBF::LogicLayer();
             cbfLayer->Name = "multilayer";
             cbfLayer->Type = CBF::LayerType::Multilayer;
             cbfLayer->PadColor = 0xc0c0c0;
@@ -1104,12 +1102,6 @@ namespace Tebo
                 cbfDecal.Outline.push_back(v);
             cbf.Decals.push_back(std::move(cbfDecal));
         }
-    }
-
-    void Board::Import(CBF::Board &cbf, std::istream &fs)
-    {
-        Load(fs);
-        Export(cbf);
     }
 
     static Board::Rep const Frep;

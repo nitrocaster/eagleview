@@ -5,14 +5,14 @@
 
 void BoardFormat::Register(BoardFormatRep const &frep)
 {
-    auto it = registry.find(frep.Tag());
+    auto const it = registry.find(frep.Tag());
     R_ASSERT(it == registry.end());
     registry.emplace(frep.Tag(), frep);
 }
 
 std::unique_ptr<BoardFormat> BoardFormat::Create(char const *tag)
 {
-    auto it = registry.find(tag);
+    auto const it = registry.find(tag);
     if (it == registry.end())
         return nullptr;
     return std::unique_ptr<BoardFormat>(it->second.Factory()());

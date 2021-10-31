@@ -97,8 +97,8 @@ struct Matrix23T
 
     static Matrix23T Rotation(Angle angle)
     {
-        Scalar sin = std::sin(angle.Radians());
-        Scalar cos = std::cos(angle.Radians());
+        Scalar const sin = std::sin(angle.Radians());
+        Scalar const cos = std::cos(angle.Radians());
         return
         {
             cos, -sin, 0,
@@ -118,7 +118,7 @@ struct Matrix23T
 
     static constexpr Matrix23T Inversion(Matrix23T const &m)
     {
-        Scalar d = m.M00*m.M11 - m.M01*m.M10;
+        Scalar const d = m.M00*m.M11 - m.M01*m.M10;
         return
         {
             +m.M11/d, -m.M01/d, (m.M01*m.M12 - m.M11*m.M02)/d,
@@ -138,7 +138,7 @@ struct Matrix23T
 
     void Turn(Angle angle)
     {
-        Vector2 scale = Scale();
+        Vector2 const scale = Scale();
         M00 = scale.X;
         M11 = scale.Y;
         M01 = 0;
@@ -158,7 +158,7 @@ struct Matrix23T
     template <typename T>
     void Scale(Vector2T<T> value)
     {
-        auto scale = Scale();
+        auto const scale = Scale();
         *this *= Scaling({1/scale.X, 1/scale.Y});
         *this *= Scaling(value);
     }
